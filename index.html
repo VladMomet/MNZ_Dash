@@ -47,7 +47,8 @@
   .slider-sub { font-size: 11px; color: #aaa; }
   input[type=range] { -webkit-appearance: none; width: 100%; height: 5px; border-radius: 3px; background: #e8e8e8; outline: none; cursor: pointer; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 2px solid #2d6a4f; box-shadow: 0 1px 3px rgba(0,0,0,0.12); cursor: pointer; }
-  .slider-ticks { display: flex; justify-content: space-between; font-size: 9px; color: #ccc; }
+  .slider-ticks { position: relative; height: 14px; margin-top: 2px; }
+  .slider-ticks span { position: absolute; transform: translateX(-50%); font-size: 9px; color: #ccc; white-space: nowrap; }
 
   /* expand */
   .expand-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 32px; cursor: pointer; user-select: none; border-radius: 16px; transition: background 0.15s; }
@@ -370,6 +371,18 @@ function grad(el) {
   const p = (el.value - el.min) / (el.max - el.min) * 100;
   el.style.background = `linear-gradient(to right,#2d6a4f ${p}%,#e8e8e8 ${p}%)`;
 }
+function buildTicks(sliderId, values) {
+  const sl = document.getElementById(sliderId);
+  if (!sl) return;
+  const container = sl.nextElementSibling;
+  if (!container || !container.classList.contains('slider-ticks')) return;
+  const mn = +sl.min, mx = +sl.max, range = mx - mn;
+  container.innerHTML = values.map(v => {
+    const p = (v - mn) / range * 100;
+    return `<span style="left:${p}%">${v}</span>`;
+  }).join('');
+}
+
 function setSlider(id, val) {
   const el = document.getElementById(id);
   const mn = +el.min, mx = +el.max;
@@ -634,6 +647,14 @@ function toggleYearExp(uid) {
   });
   grad(el);
 });
+
+// Build tick marks at correct positions
+const TICKS_NEG = [-50, 0, 100, 200, 300, 500];
+const TICKS_POS = [0, 100, 200, 300, 400, 500];
+buildTicks('p-mau',  TICKS_NEG);
+buildTicks('p-sell', TICKS_NEG);
+buildTicks('a-sell', TICKS_NEG);
+['p-cr','p-ar','a-cr','a-ar'].forEach(id => buildTicks(id, TICKS_POS));
 
 // Init
 updateAll();
