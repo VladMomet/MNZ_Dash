@@ -31,7 +31,7 @@
 
   /* charts */
   .chart-wrap    { position: relative; height: 280px; }
-  .chart-wrap-sm { position: relative; height: 190px; }
+  .chart-wrap-sm { position: relative; height: 240px; }
   .chart-wrap-xs { position: relative; height: 170px; }
   .chart-title   { font-size: 11px; font-weight: 700; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
   .grid-2  { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
@@ -95,6 +95,14 @@
 
   .section-kpi { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 24px; }
   .section-kpi .kpi-card { background: #f8f8f8; }
+
+  /* fin-scenario button */
+  .fin-btn { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600;
+    padding: 7px 16px; border-radius: 8px; border: 1.5px solid #d4820a; color: #d4820a;
+    background: #fff; cursor: pointer; transition: all 0.18s; user-select: none; }
+  .fin-btn:hover { background: #fff8ef; }
+  .fin-btn.active { background: #d4820a; color: #fff; border-color: #d4820a; }
+  .fin-btn .fin-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -106,6 +114,14 @@
       <h1>Выручка · what-if</h1>
       <div style="font-size:13px;color:#aaa;margin-top:4px">Опермодель MNZ vs Финмодель · 2026–2035</div>
     </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="fin-btn" id="fin-btn-mau" onclick="setFinMode(1)">
+        <span class="fin-dot"></span> MAU из финмодели
+      </button>
+      <button class="fin-btn" id="fin-btn-full" onclick="setFinMode(2)">
+        <span class="fin-dot"></span> MAU и Pro-селлеры из финмодели
+      </button>
+    </div>
   </div>
 
   <div class="chart-wrap"><canvas id="c-rev-top"></canvas></div>
@@ -115,12 +131,11 @@
   <div class="grid-2" style="margin-bottom:20px">
     <div><div class="chart-title">Селлеры · среднемесячные</div><div class="chart-wrap-sm"><canvas id="c-sell-top"></canvas></div></div>
     <div><div class="chart-title">ARPU · среднемесячный, $</div><div class="chart-wrap-sm"><canvas id="c-arpu-top"></canvas></div></div>
-
   </div>
 
   <div>
     <div class="chart-title">MAU · среднемесячные</div>
-    <div style="flex:1;margin-bottom:8px">
+    <div>
       <div class="slider-row">
         <div class="slider-label" style="font-size:12px">MAU · общий аплифт <span style="font-size:10px;color:#bbb;font-weight:400">↔ синхронизирован с Private Sellers</span></div>
         <div class="slider-value" id="p-mau-v">+0%</div>
@@ -129,7 +144,7 @@
       <input type="range" id="p-mau" min="-50" max="500" value="0" step="5">
       <div class="slider-ticks"><span>-50</span><span>0</span><span>100</span><span>200</span><span>300</span><span>500</span></div>
     </div>
-    <div id="mau-yexp"></div>
+    <div id="mau-yexp" style="display:none"></div>
     <div class="chart-wrap-sm"><canvas id="c-mau-top"></canvas></div>
   </div>
 </div>
@@ -284,21 +299,39 @@
   </div>
 </div>
 
-<!-- ═══ VERTICALS: INFO ONLY ═══ -->
+<!-- ═══ PRICES ═══ -->
+<div class="expand-card">
+  <div class="expand-header" onclick="toggleSection('prices')">
+    <div style="display:flex;align-items:center">
+      <span class="expand-icon" id="icon-prices">+</span>
+      <h2>Цены · Размещение и Продвижение</h2>
+    </div>
+    <span class="info-tag">Справочно · $</span>
+  </div>
+  <div class="expand-body" id="body-prices">
+    <div class="grid-2">
+      <div><div class="chart-title">Goods · размещение (30 дней, $)</div><div class="chart-wrap-sm"><canvas id="c-price-bbl-goods"></canvas></div></div>
+      <div><div class="chart-title">Goods · продвижение (7 дней, $)</div><div class="chart-wrap-sm"><canvas id="c-price-bst-goods"></canvas></div></div>
+      <div><div class="chart-title">Services · размещение (30 дней, $)</div><div class="chart-wrap-sm"><canvas id="c-price-bbl-serv"></canvas></div></div>
+      <div><div class="chart-title">Services · продвижение (7 дней, $)</div><div class="chart-wrap-sm"><canvas id="c-price-bst-serv"></canvas></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VERTICALS ═══ -->
 <div class="expand-card">
   <div class="expand-header" onclick="toggleSection('vert')">
     <div style="display:flex;align-items:center">
       <span class="expand-icon" id="icon-vert">+</span>
       <h2>Вертикали · Goods vs Services</h2>
     </div>
-    <span class="info-tag">Справочно · без ползунков</span>
+    <span class="info-tag">Справочно · опермодель</span>
   </div>
   <div class="expand-body" id="body-vert">
-    <p style="font-size:13px;color:#aaa;margin-bottom:20px;font-style:italic">Базовые данные опермодели. Финмодель показана как единая линия суммарной выручки.</p>
     <div class="grid-3">
-      <div><div class="chart-title">Выручка · Goods vs Services</div><div class="chart-wrap-sm"><canvas id="c-v-rev"></canvas></div></div>
-      <div><div class="chart-title">Итого vs Финмодель</div><div class="chart-wrap-sm"><canvas id="c-v-total"></canvas></div></div>
-      <div><div class="chart-title">Доля выручки</div><div class="chart-wrap-sm"><canvas id="c-v-share"></canvas></div></div>
+      <div><div class="chart-title">Goods · выручка</div><div class="chart-wrap-sm"><canvas id="c-v-goods"></canvas></div></div>
+      <div><div class="chart-title">Services · выручка</div><div class="chart-wrap-sm"><canvas id="c-v-serv"></canvas></div></div>
+      <div><div class="chart-title">Итого New vs Финмодель</div><div class="chart-wrap-sm"><canvas id="c-v-total"></canvas></div></div>
     </div>
   </div>
 </div>
@@ -311,8 +344,8 @@ const YEARS = [2026,2027,2028,2029,2030,2031,2032,2033,2034,2035];
 const I30 = 4, I35 = 9;
 
 // MNZ totals
-const MNZ_REV  = [1629,87285,237442,487990,909164,1405235,2109081,3078818,4425714,6290758];
-const MNZ_ARPU = [0.1244,0.1606,0.1368,0.1361,0.1704,0.1977,0.2293,0.2665,0.3137,0.3709];
+const MNZ_REV  = [1835,100779,272950,559134,1029877,1585211,2368127,3440280,4921731,6961249];
+const MNZ_ARPU = [0.1361,0.1856,0.1573,0.1560,0.1930,0.2230,0.2575,0.2978,0.3489,0.4105];
 const MNZ_LIST = [4180,49114,147615,299483,443192,590642,764614,960332,1173046,1410195];
 
 // Fin model
@@ -322,20 +355,31 @@ const FIN_LIST  = [18087,54059,264002,756188,1282716,1952530,2477291,2675655,284
 const FIN_ITEMS = [90437,278402,1400398,4131534,7218542,11317587,14790077,16453594,18035047,19768942];
 
 // Segment base
-const PRIV_REV   = [59.76,3464.01,14611.25,44413.39,97254.23,165199.31,274692.84,442361.27,696284.97,1082259.17];
-const ASD_REV    = [1569.63,83820.60,222830.51,443576.83,811910.22,1240035.90,1834388.28,2636456.60,3729429.23,5208499.00];
+const PRIV_REV   = [58.14,3369.75,14162.99,42700.38,92893.09,158126.28,263541.75,425400.27,671148.77,1045609.49];
+const ASD_REV    = [1776.84,97409.36,258787.26,516433.69,936984.39,1427084.98,2104585.13,3014879.22,4250581.86,5915639.80];
 const PRIV_LIST  = [3100.70,44323.17,137186.25,283322.53,422553.04,565520.75,734584.27,925266.90,1132914.41,1364711.26];
 const ASD_LIST   = [976.52,3785.46,7308.86,10595.12,13881.39,17167.66,20453.92,23740.19,27026.46,30312.73];
 
-// Paying listers
+// Paying listers (total = Goods + Services)
 const PRIV_PAYING = [21.00,305.15,1122.65,3115.03,6112.77,8299.47,10976.29,14103.60,17644.87,21758.18];
-const ASD_PAYING  = [251.15,1414.82,3017.82,4881.22,7070.39,8744.49,10415.82,12082.26,13741.11,15388.97];
+const ASD_PAYING  = [279.70,1585.84,3343.02,5561.17,7882.44,9724.76,11551.46,13358.13,15139.39,16888.78];
+// Per-vertical paying listers (oper model) — used as weights for blended fin ARPPU
+const GOODS_PRIV_PAYING = [20,292,1078,2988,5660,7742,10281,13254,16630,20551];
+const SERV_PRIV_PAYING  = [1.2,13.1,44.8,127.3,452.5,557.9,695.2,849.6,1015.0,1207.2];
+const GOODS_ASD_PAYING  = [239,1364,2914,4703,6765,8353,9933,11501,13055,14590];
+const SERV_ASD_PAYING   = [40.31,222.13,429.1,858.43,1117.57,1371.38,1618.38,1856.79,2084.48,2298.93];
 
 // Derived CR and ARPPU
 const PRIV_CR    = PRIV_PAYING.map((p,i) => p / PRIV_LIST[i]);
 const ASD_CR     = ASD_PAYING.map((p,i)  => p / ASD_LIST[i]);
 const PRIV_ARPPU = PRIV_REV.map((r,i) => r / (PRIV_PAYING[i] * 12));
 const ASD_ARPPU  = ASD_REV.map((r,i)  => r / (ASD_PAYING[i]  * 12));
+
+// Fin model ARPPU per vertical (provided explicitly)
+const FIN_GOODS_PRIV_ARPPU = [0.7671,0.9632,1.3662,1.6099,1.9033,2.3924,3.0194,3.7970,4.7939,6.0609];
+const FIN_SERV_PRIV_ARPPU  = [3.4461,4.2918,6.3023,5.6881,2.9233,3.7244,4.7567,6.0433,7.6963,9.7993];
+const FIN_GOODS_ASD_ARPPU  = [2.8502,6.5699,10.2462,13.2237,16.9236,20.8413,25.8061,31.8612,39.4926,49.0760];
+const FIN_SERV_ASD_ARPPU   = [4.9643,3.7581,5.7796,5.9338,6.9124,8.8718,11.4473,14.7402,19.0933,24.8261];
 
 // Items
 const PRIV_ITEMS     = [6095,79391,249989,529578,823960,1159410,1578089,2077064,2653851,3326644];
@@ -349,12 +393,31 @@ const MNZ_MAU = [76748,634798,1983754,3432720,4084132,4741320,5565955,6383986,71
 const FIN_MAU = [92845,1108516,3376546,7339453,10855263,14401486,17742046,19879282,21948540,24236064];
 
 // Fin model revenue per segment
-const FIN_PRIV_REV = [182,5757,90623,814473,2470312,4467459,6049547,6908700,7774549,8749898];
-const FIN_ASD_REV  = [39,32705,809309,4508720,10859420,18325698,24815489,28339773,31891517,35892436];
+const FIN_PRIV_REV = [62,2615,61812,718520,1762274,3098200,4111730,4661584,5207139,5816542];
+const FIN_ASD_REV  = [11,14420,531114,3684247,7228921,12708943,16866485,19122009,21359898,23859692];
 
 // Verticals
-const GOODS_REV = [1339.65,81152.30,221775.38,457125.66,855506.92,1319594.59,1975848.27,2877529.77,4126818.59,5852391.80];
-const SERV_REV  = [289.75,6132.31,15666.37,30864.56,53657.53,85640.62,133232.85,201288.11,298895.62,438366.37];
+const GOODS_REV = [1463.52,91901.17,250813.67,514433.02,960469.47,1476015.71,2200868.38,3191336.96,4557206.71,6433833.30];
+const SERV_REV  = [371.46,8877.94,22136.57,44701.05,69408.01,109195.55,167258.50,248942.54,364523.92,527416.00];
+const FIN_GOODS_REV = [73,17035,592926,4402767,8991195,15807143,20978215,23783593,26567037,29676234];
+const FIN_SERV_REV  = [148,21427,307007,920427,4338537,6986014,9886821,11464880,13099028,14966100];
+
+// Prices (USD) — справочно
+// Oper model prices
+const PRICE_BBL_GOODS = [0.0974,0.0968,0.1182,0.1529,0.1963,0.2379,0.2883,0.3494,0.4233,0.5130];
+const PRICE_BBL_SERV  = [0.1695,0.1695,0.1957,0.2368,0.2866,0.3467,0.4195,0.5076,0.6142,0.7432];
+const PRICE_BST_GOODS = [0.3483,0.3373,0.381,0.452,0.5426,0.6534,0.7864,0.9467,1.1403,1.3736];
+const PRICE_BST_SERV  = [1.0414,1.0414,1.2028,1.4554,1.761,2.1309,2.5783,3.1198,3.775,4.5677];
+// Fin model prices
+const FIN_PRICE_BBL_GOODS = [0.0974,0.1171,0.1783,0.2402,0.3084,0.3737,0.4529,0.5488,0.6650,0.8059];
+const FIN_PRICE_BBL_SERV  = [0.1695,0.2050,0.2953,0.3720,0.4501,0.5447,0.6591,0.7975,0.9649,1.1676];
+const FIN_PRICE_BST_GOODS = [0.3483,0.4080,0.5746,0.7101,0.8524,1.0264,1.2354,1.4872,1.7913,2.1578];
+const FIN_PRICE_BST_SERV  = [1.0414,1.2601,1.8145,2.2863,2.7664,3.3474,4.0503,4.9009,5.9301,7.1754];
+// OLX 2025 reference prices (flat lines)
+const OLX_BBL_GOODS = YEARS.map(() => 0.2009);
+const OLX_BBL_SERV  = YEARS.map(() => 0.3389);
+const OLX_BST_GOODS = YEARS.map(() => 0.6417);
+const OLX_BST_SERV  = YEARS.map(() => 2.0828);
 
 // ══════════════════════════════════════════════════════════
 // HELPERS
@@ -393,10 +456,16 @@ function setSlider(id, val) {
 // ══════════════════════════════════════════════════════════
 // CHART HELPERS
 // ══════════════════════════════════════════════════════════
-function ds(label, data, color, dash, w) {
+function ds(label, data, color, dash, w, order) {
   return { label, data:[...data], borderColor:color, backgroundColor:'transparent',
-           borderWidth:w||(dash?1.8:2.5), borderDash:dash||[], pointRadius:0, tension:0.35, pointStyle:'line' };
+           borderWidth:w||(dash?1.8:2.5), borderDash:dash||[], pointRadius:0, tension:0.35,
+           pointStyle:'line', order: order ?? 2 };
 }
+// order helpers: lower value = drawn last = visually on top
+const ORD_OPR = 1;   // red/blue "опермодель" — on top
+const ORD_NEW = 2;   // green "New" — below опермодель, above финмодель
+const ORD_FIN = 3;   // orange "Финмодель"
+const ORD_OLX = 4;   // grey OLX reference line
 function lineChart(id, datasets, tickFmt) {
   return new Chart(document.getElementById(id).getContext('2d'), {
     type:'line', data:{ labels:YEARS, datasets },
@@ -436,47 +505,62 @@ const OLX_SELL_LINE = YEARS.map(() => 468574);
 // OLX ARPU = $3.5M revenue / (468,574 sellers * 12 months)
 const OLX_ARPU_LINE = YEARS.map(() => +(3500000 / (468574 * 12)).toFixed(4));
 
-const cRevTop  = lineChart('c-rev-top',  [ ds('Финмодель',FIN_REV,'#d4820a',[]), ds('MNZ · опермодель',MNZ_REV,'#c0392b',[6,3]), ds('New',MNZ_REV,'#2d6a4f',[]), { label:'OLX 2025', data:OLX_LINE, borderColor:'#888', backgroundColor:'transparent', borderWidth:1.5, borderDash:[4,4], pointRadius:0, tension:0, pointStyle:'line' } ], fmtM);
-const cSellTop = lineChart('c-sell-top', [ ds('Финмодель',FIN_LIST,'#d4820a',[]), ds('MNZ · опермодель',MNZ_LIST,'#c0392b',[6,3]), ds('New',MNZ_LIST,'#2d6a4f',[]), { label:'OLX 2025', data:OLX_SELL_LINE, borderColor:'#999', backgroundColor:'transparent', borderWidth:1.5, borderDash:[3,3], pointRadius:0, tension:0, pointStyle:'line' } ], fmtK);
+const OLX_DS = (data) => ({ label:'OLX 2025', data, borderColor:'#999', backgroundColor:'transparent', borderWidth:1.5, borderDash:[3,3], pointRadius:0, tension:0, pointStyle:'line', order:ORD_OLX });
 
-const cMauTop  = lineChart('c-mau-top',  [ ds('Финмодель',FIN_MAU,'#d4820a',[]), ds('MNZ · опермодель',MNZ_MAU,'#c0392b',[6,3]), ds('New',MNZ_MAU,'#2d6a4f',[]), { label:'OLX 2025', data:OLX_MAU_LINE, borderColor:'#999', backgroundColor:'transparent', borderWidth:1.5, borderDash:[3,3], pointRadius:0, tension:0, pointStyle:'line' } ], fmtK);
-const cArpuTop = lineChart('c-arpu-top', [ ds('Финмодель',FIN_ARPU,'#d4820a',[]), ds('MNZ · опермодель',MNZ_ARPU,'#c0392b',[6,3]), ds('New',MNZ_ARPU,'#2d6a4f',[]), { label:'OLX 2025', data:OLX_ARPU_LINE, borderColor:'#999', backgroundColor:'transparent', borderWidth:1.5, borderDash:[3,3], pointRadius:0, tension:0, pointStyle:'line' } ], v=>'$'+v.toFixed(3));
+const cRevTop  = lineChart('c-rev-top',  [ ds('Финмодель',FIN_REV,'#d4820a',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_REV,'#c0392b',[6,3],undefined,ORD_OPR), ds('New',MNZ_REV,'#2d6a4f',[],undefined,ORD_NEW), OLX_DS(OLX_LINE) ], fmtM);
+const cSellTop = lineChart('c-sell-top', [ ds('Финмодель',FIN_LIST,'#d4820a',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_LIST,'#c0392b',[6,3],undefined,ORD_OPR), ds('New',MNZ_LIST,'#2d6a4f',[],undefined,ORD_NEW), OLX_DS(OLX_SELL_LINE) ], fmtK);
 
-// Segment revenue (separate) — with fin model breakdown
-// idx: 0=fin, 1=base, 2=scenario
-const cPrivRev = lineChart('c-p-rev', [ ds('Финмодель · Private',FIN_PRIV_REV,'#d4820a',[4,3],1.5), ds('Private · опермодель',PRIV_REV,'#3a86ff',[5,3]), ds('Private · new',PRIV_REV,'#3a86ff',[]) ], fmtM);
-const cAsdRev  = lineChart('c-a-rev', [ ds('Финмодель · Pro',FIN_ASD_REV,'#d4820a',[4,3],1.5),     ds('Pro · опермодель',ASD_REV,'#8338ec',[5,3]),       ds('Pro · new',ASD_REV,'#8338ec',[]) ], fmtM);
+const cMauTop  = lineChart('c-mau-top',  [ ds('Финмодель',FIN_MAU,'#d4820a',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_MAU,'#c0392b',[6,3],undefined,ORD_OPR), ds('New',MNZ_MAU,'#2d6a4f',[],undefined,ORD_NEW), OLX_DS(OLX_MAU_LINE) ], fmtK);
+const cArpuTop = lineChart('c-arpu-top', [ ds('Финмодель',FIN_ARPU,'#d4820a',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_ARPU,'#c0392b',[6,3],undefined,ORD_OPR), ds('New',MNZ_ARPU,'#2d6a4f',[],undefined,ORD_NEW), OLX_DS(OLX_ARPU_LINE) ], v=>'$'+v.toFixed(3));
 
-// Sellers separate — no fin model breakdown available
-const cPrivSell= lineChart('c-p-sell', [ ds('Private · опермодель',PRIV_LIST,'#3a86ff',[5,3]), ds('Private · new',PRIV_LIST,'#3a86ff',[]) ], fmtK);
-const cAsdSell = lineChart('c-a-sell', [ ds('Pro · опермодель',ASD_LIST,'#8338ec',[5,3]),       ds('Pro · new',ASD_LIST,'#8338ec',[]) ], fmtK);
+// Segment revenue — idx: 0=fin, 1=base, 2=scenario
+const cPrivRev = lineChart('c-p-rev', [ ds('Финмодель · Private',FIN_PRIV_REV,'#d4820a',[4,3],1.5,ORD_FIN), ds('Private · опермодель',PRIV_REV,'#2980b9',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_REV,'#2980b9',[],undefined,ORD_NEW) ], fmtM);
+const cAsdRev  = lineChart('c-a-rev', [ ds('Финмодель · Pro',FIN_ASD_REV,'#d4820a',[4,3],1.5,ORD_FIN),     ds('Pro · опермодель',ASD_REV,'#8e44ad',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_REV,'#8e44ad',[],undefined,ORD_NEW) ], fmtM);
 
-// CR — separate per segment. idx: [0]=oper [1]=new
-const cCRPriv  = lineChart('c-cr-priv',  [ ds('Private · опермодель',PRIV_CR,'#3a86ff',[5,3]), ds('Private · new',PRIV_CR,'#3a86ff',[]) ], v=>(v*100).toFixed(2)+'%');
-const cCRPro   = lineChart('c-cr-pro',   [ ds('Pro · опермодель',ASD_CR,'#8338ec',[5,3]),      ds('Pro · new',ASD_CR,'#8338ec',[]) ],      v=>(v*100).toFixed(1)+'%');
-// ARPPU — separate per segment. idx: [0]=oper [1]=new
-const cARPPUPriv = lineChart('c-arppu-priv', [ ds('Private · опермодель',PRIV_ARPPU,'#3a86ff',[5,3]), ds('Private · new',PRIV_ARPPU,'#3a86ff',[]) ], v=>'$'+v.toFixed(2));
-const cARPPUPro  = lineChart('c-arppu-pro',  [ ds('Pro · опермодель',ASD_ARPPU,'#8338ec',[5,3]),      ds('Pro · new',ASD_ARPPU,'#8338ec',[]) ],      v=>'$'+v.toFixed(2));
+// Sellers — idx: 0=base, 1=scenario
+const OLX_PRIV_SELL = YEARS.map(() => 423977);
+const OLX_ASD_SELL  = YEARS.map(() => 27433);
+const OLX_PRIV_CR   = YEARS.map(() => 0.01);
+const OLX_ASD_CR    = YEARS.map(() => 0.64);
+const cPrivSell= lineChart('c-p-sell', [ ds('Private · опермодель',PRIV_LIST,'#2980b9',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_LIST,'#2980b9',[],undefined,ORD_NEW), OLX_DS(OLX_PRIV_SELL) ], fmtK);
+const cAsdSell    = lineChart('c-a-sell',        [ ds('Pro · опермодель',ASD_LIST,'#8e44ad',[5,3],undefined,ORD_OPR), ds('Pro · new',ASD_LIST,'#8e44ad',[],undefined,ORD_NEW), OLX_DS(OLX_ASD_SELL) ], fmtK);
 
-// Items — separate per segment WITH fin model segment breakdown
-// idx: 0=fin, 1=base, 2=scenario
-const cItemsPriv = lineChart('c-items-priv', [ ds('Финмодель · Private',FIN_PRIV_ITEMS,'#d4820a',[4,3],1.5), ds('Private · опермодель',PRIV_ITEMS,'#3a86ff',[5,3]), ds('Private · new',PRIV_ITEMS,'#3a86ff',[]) ], fmtKI);
-const cItemsAsd  = lineChart('c-items-asd',  [ ds('Финмодель · Pro',FIN_ASD_ITEMS,'#d4820a',[4,3],1.5),     ds('Pro · опермодель',ASD_ITEMS,'#8338ec',[5,3]),       ds('Pro · new',ASD_ITEMS,'#8338ec',[]) ], fmtKI);
+// CR — idx: 0=oper, 1=new
+const cCRPriv  = lineChart('c-cr-priv',  [ ds('Private · опермодель',PRIV_CR,'#2980b9',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_CR,'#2980b9',[],undefined,ORD_NEW) ], v=>(v*100).toFixed(2)+'%');
+const cCRPro   = lineChart('c-cr-pro',   [ ds('Pro · опермодель',ASD_CR,'#8e44ad',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_CR,'#8e44ad',[],undefined,ORD_NEW) ],     v=>(v*100).toFixed(1)+'%');
 
-// Verticals (static)
-const cVRev  = lineChart('c-v-rev',   [ ds('Goods',GOODS_REV,'#fb5607',[]), ds('Services',SERV_REV,'#06d6a0',[]) ], fmtM);
-const cVTotal= lineChart('c-v-total', [ ds('Финмодель',FIN_REV,'#d4820a',[]), ds('Опермодель',MNZ_REV,'#c0392b',[6,3]) ], fmtM);
-const cVShare= new Chart(document.getElementById('c-v-share').getContext('2d'), {
-  type:'bar', data:{ labels:YEARS, datasets:[
-    { label:'Goods',    data:GOODS_REV.map((g,i)=>g/(g+SERV_REV[i])*100), backgroundColor:'rgba(251,86,7,0.75)',  stack:'s' },
-    { label:'Services', data:SERV_REV.map((s,i)=>s/(GOODS_REV[i]+s)*100),  backgroundColor:'rgba(6,214,160,0.75)', stack:'s' },
-  ]},
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{ position:'top', labels:{ boxWidth:14, font:{size:11}, color:'#666', padding:10 } }, tooltip:{ callbacks:{ label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(1)}%` } } },
-    scales:{ x:{ stacked:true, grid:{color:'#f0f0f0'}, ticks:{font:{size:11},color:'#aaa'} }, y:{ stacked:true, max:100, grid:{color:'#f0f0f0'}, ticks:{font:{size:11},color:'#aaa',callback:v=>v+'%'} } }
-  }
-});
+// ARPPU — idx: 0=oper, 1=new
+const cARPPUPriv = lineChart('c-arppu-priv', [ ds('Private · опермодель',PRIV_ARPPU,'#2980b9',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_ARPPU,'#2980b9',[],undefined,ORD_NEW) ], v=>'$'+v.toFixed(2));
+const cARPPUPro  = lineChart('c-arppu-pro',  [ ds('Pro · опермодель',ASD_ARPPU,'#8e44ad',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_ARPPU,'#8e44ad',[],undefined,ORD_NEW) ],     v=>'$'+v.toFixed(2));
+
+// Items — idx: 0=fin, 1=base, 2=scenario
+const cItemsPriv = lineChart('c-items-priv', [ ds('Финмодель · Private',FIN_PRIV_ITEMS,'#d4820a',[4,3],1.5,ORD_FIN), ds('Private · опермодель',PRIV_ITEMS,'#2980b9',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_ITEMS,'#2980b9',[],undefined,ORD_NEW) ], fmtKI);
+const cItemsAsd  = lineChart('c-items-asd',  [ ds('Финмодель · Pro',FIN_ASD_ITEMS,'#d4820a',[4,3],1.5,ORD_FIN),     ds('Pro · опермодель',ASD_ITEMS,'#8e44ad',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_ITEMS,'#8e44ad',[],undefined,ORD_NEW) ], fmtKI);
+
+// Prices (static reference) — 4 charts with OLX reference line
+const fmtUSD = v => '$'+v.toFixed(3);
+const olxDs = (data) => ({ label:'OLX 2025', data, borderColor:'#999', backgroundColor:'transparent', borderWidth:1.5, borderDash:[4,4], pointRadius:0, tension:0, pointStyle:'line', order:ORD_OLX });
+const cPriceBBLGoods = lineChart('c-price-bbl-goods', [ ds('MNZ · Goods размещение', PRICE_BBL_GOODS,'#fb5607',[],undefined,ORD_OPR), olxDs(OLX_BBL_GOODS) ], fmtUSD);
+const cPriceBBLServ  = lineChart('c-price-bbl-serv',  [ ds('MNZ · Services размещение', PRICE_BBL_SERV,'#06d6a0',[],undefined,ORD_OPR), olxDs(OLX_BBL_SERV)  ], fmtUSD);
+const cPriceBSTGoods = lineChart('c-price-bst-goods', [ ds('MNZ · Goods продвижение',  PRICE_BST_GOODS,'#fb5607',[],undefined,ORD_OPR), olxDs(OLX_BST_GOODS) ], fmtUSD);
+const cPriceBSTServ  = lineChart('c-price-bst-serv',  [ ds('MNZ · Services продвижение',PRICE_BST_SERV,'#06d6a0',[],undefined,ORD_OPR), olxDs(OLX_BST_SERV)  ], fmtUSD);
+
+// Verticals
+const cVGoods = lineChart('c-v-goods', [ ds('Финмодель',FIN_GOODS_REV,'#d4820a',[4,3],1.5,ORD_FIN), ds('Goods · опермодель',GOODS_REV,'#fb5607',[6,3],undefined,ORD_OPR), ds('Goods · new',GOODS_REV,'#fb5607',[],undefined,ORD_NEW) ], fmtM);
+const cVServ  = lineChart('c-v-serv',  [ ds('Финмодель',FIN_SERV_REV,'#d4820a',[4,3],1.5,ORD_FIN),  ds('Services · опермодель',SERV_REV,'#06d6a0',[6,3],undefined,ORD_OPR), ds('Services · new',SERV_REV,'#06d6a0',[],undefined,ORD_NEW) ], fmtM);
+const cVTotal = lineChart('c-v-total', [ ds('Финмодель',FIN_REV,'#d4820a',[],undefined,ORD_FIN), ds('Опермодель',MNZ_REV,'#c0392b',[6,3],undefined,ORD_OPR), ds('New · итого',MNZ_REV,'#2d6a4f',[],undefined,ORD_NEW) ], fmtM);
+
+// ══════════════════════════════════════════════════════════
+// FIN SCENARIO TOGGLE
+// ══════════════════════════════════════════════════════════
+let finMode = 0; // 0=off, 1=MAU only, 2=MAU+Pro
+
+function setFinMode(mode) {
+  finMode = (finMode === mode) ? 0 : mode; // toggle off if already active
+  document.getElementById('fin-btn-mau').classList.toggle('active',  finMode === 1);
+  document.getElementById('fin-btn-full').classList.toggle('active', finMode === 2);
+  updateAll();
+}
 
 // ══════════════════════════════════════════════════════════
 // UPDATE
@@ -493,22 +577,73 @@ function updateAll() {
   const clPSell = cumLifts('p-sell'), clPCr = cumLifts('p-cr'), clPAr = cumLifts('p-ar');
   const clASell = cumLifts('a-sell'), clACr = cumLifts('a-cr'), clAAr = cumLifts('a-ar');
 
-  // Scenario arrays
-  const scPrivRev   = PRIV_REV.map((v,i)   => v * (1+pSl+clPSell[i]) * (1+pCr+clPCr[i]) * (1+pAr+clPAr[i]));
-  const scAsdRev    = ASD_REV.map((v,i)    => v * (1+aSl+clASell[i]) * (1+aCr+clACr[i]) * (1+aAr+clAAr[i]));
-  const scPrivList  = PRIV_LIST.map((v,i)  => v * (1+pSl+clPSell[i]));
-  const scAsdList   = ASD_LIST.map((v,i)   => v * (1+aSl+clASell[i]));
-  const scPrivCR    = PRIV_CR.map((v,i)    => v * (1+pCr+clPCr[i]));
-  const scAsdCR     = ASD_CR.map((v,i)     => v * (1+aCr+clACr[i]));
-  const scPrivARPPU = PRIV_ARPPU.map((v,i) => v * (1+pAr+clPAr[i]));
-  const scAsdARPPU  = ASD_ARPPU.map((v,i)  => v * (1+aAr+clAAr[i]));
-  const scPrivItems = PRIV_ITEMS.map((v,i) => v * (1+pSl+clPSell[i]));
-  const scAsdItems  = ASD_ITEMS.map((v,i)  => v * (1+aSl+clASell[i]));
+  // Base arrays depend on fin scenario mode
+  // mode 1 (MAU only): Private scales with MAU, Pro unchanged, ARPPU from fin rev/sellers
+  // mode 2 (MAU+Pro):  same + Pro sellers scale to match FIN_ASD_ITEMS
+  const finMAU  = finMode >= 1;
+  const finPro  = finMode >= 2;
+
+  const mauRatio      = FIN_MAU.map((f,i) => f / MNZ_MAU[i]);
+  const basePrivList  = finMAU ? PRIV_LIST.map((v,i)  => v * mauRatio[i]) : PRIV_LIST;
+  const basePrivItems = finMAU ? PRIV_ITEMS.map((v,i) => v * mauRatio[i]) : PRIV_ITEMS;
+  const baseMau       = finMAU ? FIN_MAU : MNZ_MAU;
+
+  // Pro sellers in fin scenario: FIN_ASD_ITEMS / 30 items-per-seller
+  const baseAsdList  = finPro ? FIN_ASD_ITEMS.map(v => v / 30) : ASD_LIST;
+  const baseAsdItems = finPro ? FIN_ASD_ITEMS  : ASD_ITEMS;
+
+  // ARPPU base:
+  // - base scenario: oper model ARPPU (from Excel)
+  // - fin scenarios: blended from per-vertical fin ARPPU weighted by oper-model paying user shares
+  //   (Goods/Services ratio stays the same when list scales uniformly by mauRatio)
+  const basePrivARPPU = finMAU
+    ? PRIV_PAYING.map((total,i) => {
+        const gW = GOODS_PRIV_PAYING[i] / total;
+        const sW = SERV_PRIV_PAYING[i]  / total;
+        return gW * FIN_GOODS_PRIV_ARPPU[i] + sW * FIN_SERV_PRIV_ARPPU[i];
+      })
+    : PRIV_ARPPU;
+  const baseAsdARPPU = finPro
+    ? ASD_PAYING.map((total,i) => {
+        const gW = GOODS_ASD_PAYING[i] / total;
+        const sW = SERV_ASD_PAYING[i]  / total;
+        return gW * FIN_GOODS_ASD_ARPPU[i] + sW * FIN_SERV_ASD_ARPPU[i];
+      })
+    : ASD_ARPPU;
+
+  // Base revenue derived from list × CR × ARPPU × 12 (not pinned to fin model revenue)
+  const basePrivRev = basePrivList.map((l,i) => l * PRIV_CR[i] * basePrivARPPU[i] * 12);
+  const baseAsdRev  = baseAsdList.map((l,i)  => l * ASD_CR[i]  * baseAsdARPPU[i]  * 12);
+
+  // Scenario arrays: slider uplift on top of base
+  const scPrivRev   = basePrivRev.map((v,i)   => v * (1+pSl+clPSell[i]) * (1+pCr+clPCr[i]) * (1+pAr+clPAr[i]));
+  const scPrivList  = basePrivList.map((v,i)  => v * (1+pSl+clPSell[i]));
+  const scPrivItems = basePrivItems.map((v,i) => v * (1+pSl+clPSell[i]));
+
+  const scPrivCR    = PRIV_CR.map((v,i)       => v * (1+pCr+clPCr[i]));
+  const scPrivARPPU = basePrivARPPU.map((v,i) => v * (1+pAr+clPAr[i]));
+
+  const scAsdList   = baseAsdList.map((v,i)  => v * (1+aSl+clASell[i]));
+  const scAsdItems  = baseAsdItems.map((v,i) => v * (1+aSl+clASell[i]));
+  const scAsdCR     = ASD_CR.map((v,i)       => v * (1+aCr+clACr[i]));
+  const scAsdARPPU  = baseAsdARPPU.map((v,i) => v * (1+aAr+clAAr[i]));
+  const scAsdRev    = baseAsdRev.map((v,i)   => v * (1+aSl+clASell[i]) * (1+aCr+clACr[i]) * (1+aAr+clAAr[i]));
+
+  // MAU: slider uplift on top of base (fin or oper)
+  const mauYearLifts = YEARS.map(y => +document.getElementById('mau-y-'+y).value / 100);
+  const mauCumLift   = mauYearLifts.map((_,i) => mauYearLifts.slice(0,i+1).reduce((a,b)=>a+b,0));
+  const scMauBase    = baseMau.map((v,i) => v * (1 + pSl + mauCumLift[i]));
+
   const scTotalRev  = scPrivRev.map((v,i)  => v + scAsdRev[i]);
   const scTotalList = scPrivList.map((v,i) => v + scAsdList[i]);
   // ARPU total: scale MNZ_ARPU by revenue uplift ratio
   // Avoids drift from segment rounding vs Excel-computed MNZ_ARPU
-  const scTotalArpu = MNZ_ARPU.map((a,i) => a * scTotalRev[i] / MNZ_REV[i]);
+  // ARPU = Revenue / (Sellers × 12)
+  // In fin scenario sellers base also changes, so direct division is correct.
+  // In normal mode this matches the ratio trick (MNZ_ARPU * rev/MNZ_REV / (sellers/MNZ_LIST))
+  const scTotalArpu = scTotalRev.map((r,i) =>
+    scTotalList[i] > 0 ? r / (scTotalList[i] * 12) : 0
+  );
 
   // Update segment charts
   // Revenue: [0]=fin [1]=base [2]=scenario
@@ -528,22 +663,37 @@ function updateAll() {
 
   [cPrivRev,cAsdRev,cPrivSell,cAsdSell,cCRPriv,cCRPro,cARPPUPriv,cARPPUPro,cItemsPriv,cItemsAsd].forEach(c=>c.update('none'));
 
-  // MAU: total uplift (= p-mau = p-sell) + cumulative year uplifts
-  const yearLifts = YEARS.map(y => +document.getElementById('mau-y-'+y).value / 100);
-  const cumYearLift = yearLifts.map((_, i) => yearLifts.slice(0, i+1).reduce((a,b) => a+b, 0));
-  const scMau = MNZ_MAU.map((v, i) => v * (1 + pSl + cumYearLift[i]));
+  // MAU: fin-scenario → FIN_MAU; otherwise slider-based
+  const scMau = scMauBase;
 
   // Update top total charts
-  cRevTop.data.datasets[2].data  = scTotalRev;
-  cSellTop.data.datasets[2].data = scTotalList;
-  cArpuTop.data.datasets[2].data = scTotalArpu;
-  cMauTop.data.datasets[2].data  = scMau;
+  cRevTop.data.datasets[2].data     = scTotalRev;
+  cSellTop.data.datasets[2].data    = scTotalList;
+  cArpuTop.data.datasets[2].data    = scTotalArpu;
+  cMauTop.data.datasets[2].data     = scMau;
   [cRevTop,cSellTop,cArpuTop,cMauTop].forEach(c=>c.update('none'));
+
+  // Verticals: scale Goods/Services by total revenue ratio
+  const scGoods = GOODS_REV.map((v,i) => MNZ_REV[i] > 0 ? v * scTotalRev[i] / MNZ_REV[i] : v);
+  const scServ  = SERV_REV.map((v,i)  => MNZ_REV[i] > 0 ? v * scTotalRev[i] / MNZ_REV[i] : v);
+  cVGoods.data.datasets[2].data = scGoods;
+  cVServ.data.datasets[2].data  = scServ;
+  cVTotal.data.datasets[2].data = scTotalRev;
+  [cVGoods, cVServ, cVTotal].forEach(c => c.update('none'));
+
+  // Price charts — switch to fin model prices when any fin scenario is active
+  const useFin = finMode >= 1;
+  cPriceBBLGoods.data.datasets[0].data = useFin ? FIN_PRICE_BBL_GOODS : PRICE_BBL_GOODS;
+  cPriceBBLServ.data.datasets[0].data  = useFin ? FIN_PRICE_BBL_SERV  : PRICE_BBL_SERV;
+  cPriceBSTGoods.data.datasets[0].data = useFin ? FIN_PRICE_BST_GOODS : PRICE_BST_GOODS;
+  cPriceBSTServ.data.datasets[0].data  = useFin ? FIN_PRICE_BST_SERV  : PRICE_BST_SERV;
+  [cPriceBBLGoods, cPriceBBLServ, cPriceBSTGoods, cPriceBSTServ].forEach(c => c.update('none'));
 
   // Slider sub-labels
   const ps30 = PRIV_LIST[I30],  as30 = ASD_LIST[I30];
   const pc30 = PRIV_CR[I30],    ac30 = ASD_CR[I30];
-  const pa30 = PRIV_ARPPU[I30], aa30 = ASD_ARPPU[I30];
+  const pa30 = finMAU ? basePrivARPPU[I30] : PRIV_ARPPU[I30];
+  const aa30 = finPro ? baseAsdARPPU[I30] : ASD_ARPPU[I30];
 
   document.getElementById('p-sell-v').textContent = fmtPct(pSl);
   document.getElementById('p-cr-v').textContent   = fmtPct(pCr);
@@ -552,12 +702,27 @@ function updateAll() {
   document.getElementById('a-cr-v').textContent   = fmtPct(aCr);
   document.getElementById('a-ar-v').textContent   = fmtPct(aAr);
 
-  document.getElementById('p-sell-s').textContent = `2030: ${fmtK(ps30)}${pSl>0?' → '+fmtK(ps30*(1+pSl)):''}`;
+  const scPrivList30 = scPrivList[I30], scAsdList30 = scAsdList[I30];
+  const scPrivCR30   = scPrivCR[I30],   scAsdCR30   = scAsdCR[I30];
+  const scPrivAR30   = scPrivARPPU[I30],scAsdAR30   = scAsdARPPU[I30];
+
+  // "было" shows fin model base when fin scenario is on
+  const mauBase30   = finMAU ? FIN_MAU[I30]      : MNZ_MAU[I30];
+  const privBase30  = finMAU ? basePrivList[I30] : ps30;
+  const asdBase30   = finPro ? baseAsdList[I30] : as30;
+
+  document.getElementById('p-sell-s').textContent = `2030: ${fmtK(privBase30)} → ${fmtK(scPrivList30)}`;
   document.getElementById('p-mau-v').textContent  = fmtPct(pSl);
-  document.getElementById('p-mau-s').textContent  = `2030: ${fmtK(MNZ_MAU[I30])} → ${fmtK(scMau[I30])}`;
+  document.getElementById('p-mau-s').textContent  = `2030: ${fmtK(mauBase30)} → ${fmtK(scMau[I30])}`;
+  document.getElementById('p-cr-s').textContent   = `2030: ${(pc30*100).toFixed(2)}% → ${(scPrivCR30*100).toFixed(2)}%`;
+  document.getElementById('p-ar-s').textContent   = `2030: $${pa30.toFixed(2)} → $${scPrivAR30.toFixed(2)}`;
+  document.getElementById('a-sell-s').textContent = `2030: ${fmtK(asdBase30)} → ${fmtK(scAsdList30)}`;
+  document.getElementById('a-cr-s').textContent   = `2030: ${(ac30*100).toFixed(1)}% → ${(scAsdCR30*100).toFixed(1)}%`;
+  document.getElementById('a-ar-s').textContent   = `2030: $${aa30.toFixed(2)} → $${scAsdAR30.toFixed(2)}`;
+
   YEARS.forEach((y,i) => {
-    const v = yearLifts[i];
-    document.getElementById('mau-y-'+y+'-v').textContent = v>0 ? '+'+Math.round(v*100)+'%' : '+0%';
+    const v = mauYearLifts[i];
+    document.getElementById('mau-y-'+y+'-v').textContent = (v>=0?'+':'')+Math.round(v*100)+'%';
   });
   // Update year labels for metric sliders
   [['p-sell',clPSell],['p-cr',clPCr],['p-ar',clPAr],['a-sell',clASell],['a-cr',clACr],['a-ar',clAAr]].forEach(([prefix, cl]) => {
@@ -565,14 +730,9 @@ function updateAll() {
       const el = document.getElementById(prefix+'-y-'+y); if (!el) return;
       const v = +el.value/100;
       const lbl = document.getElementById(prefix+'-y-'+y+'-v');
-      if (lbl) lbl.textContent = v>0 ? '+'+Math.round(v*100)+'%' : '+0%';
+      if (lbl) lbl.textContent = (v>=0?'+':'')+Math.round(v*100)+'%';
     });
   });
-  document.getElementById('p-cr-s').textContent   = `2030: ${(pc30*100).toFixed(2)}%${pCr>0?' → '+(pc30*(1+pCr)*100).toFixed(2)+'%':''}`;
-  document.getElementById('p-ar-s').textContent   = `2030: $${pa30.toFixed(2)}${pAr>0?' → $'+(pa30*(1+pAr)).toFixed(2):''}`;
-  document.getElementById('a-sell-s').textContent = `2030: ${fmtK(as30)}${aSl>0?' → '+fmtK(as30*(1+aSl)):''}`;
-  document.getElementById('a-cr-s').textContent   = `2030: ${(ac30*100).toFixed(1)}%${aCr>0?' → '+(ac30*(1+aCr)*100).toFixed(1)+'%':''}`;
-  document.getElementById('a-ar-s').textContent   = `2030: $${aa30.toFixed(2)}${aAr>0?' → $'+(aa30*(1+aAr)).toFixed(2):''}`;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -586,7 +746,8 @@ function toggleSection(key) {
   icon.classList.toggle('open', !wasOpen);
   if (!wasOpen) {
     if (key==='seg') setTimeout(()=>{ [cPrivRev,cAsdRev,cPrivSell,cAsdSell,cCRPriv,cCRPro,cARPPUPriv,cARPPUPro,cItemsPriv,cItemsAsd].forEach(c=>c.resize()); }, 60);
-    if (key==='vert') setTimeout(()=>{ [cVRev,cVTotal,cVShare].forEach(c=>c.resize()); }, 60);
+    if (key==='vert')   setTimeout(()=>{ [cVGoods,cVServ,cVTotal].forEach(c=>c.resize()); }, 60);
+    if (key==='prices') setTimeout(()=>{ [cPriceBBLGoods,cPriceBBLServ,cPriceBSTGoods,cPriceBSTServ].forEach(c=>c.resize()); }, 60);
   }
 }
 
