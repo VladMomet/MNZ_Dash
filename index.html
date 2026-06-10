@@ -7,9 +7,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f3; color: #1a1a1a; padding: 32px; min-height: 100vh; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #EEEAFF; color: #1a1a1a; padding: 32px; min-height: 100vh; }
 
-  .card, .expand-card { background: #fff; border-radius: 16px; max-width: 1100px; margin: 0 auto 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+  .card, .expand-card { background: #fff; border-radius: 16px; max-width: 1100px; margin: 0 auto 16px; box-shadow: 0 2px 16px rgba(80,56,255,0.10); }
   .card { padding: 32px 36px; }
 
   h1 { font-size: 22px; font-weight: 700; }
@@ -20,73 +20,73 @@
 
   /* KPI */
   .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-  .kpi-card { border: 1px solid #e8e8e6; border-radius: 10px; padding: 14px 16px; }
+  .kpi-card { border: 1px solid #DDD8FF; border-radius: 10px; padding: 14px 16px; }
   .kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: #999; margin-bottom: 6px; font-weight: 600; }
-  .kpi-value { font-size: 26px; font-weight: 700; color: #2d6a4f; letter-spacing: -0.5px; }
+  .kpi-value { font-size: 26px; font-weight: 700; color: #5038FF; letter-spacing: -0.5px; }
   .kpi-value.neutral { color: #555; }
 
   /* narrative */
-  .narrative { background: #f0f7f4; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #2d6a4f; margin-bottom: 20px; line-height: 1.6; }
+  .narrative { background: #EEEAFF; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #5038FF; margin-bottom: 20px; line-height: 1.6; }
   .narrative.base { background: #f5f5f3; color: #888; }
 
   /* charts */
   .chart-wrap    { position: relative; height: 280px; }
   .chart-wrap-sm { position: relative; height: 240px; }
   .chart-wrap-xs { position: relative; height: 170px; }
-  .chart-title   { font-size: 11px; font-weight: 700; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .chart-title   { font-size: 11px; font-weight: 700; color: #8A7BB5; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
   .grid-2  { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
   .grid-3  { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-  .divider { border: none; border-top: 1px solid #f0f0ee; margin: 20px 0; }
+  .divider { border: none; border-top: 1px solid #EEE9FF; margin: 20px 0; }
 
   /* sliders */
   .slider-block { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
   .slider-block:last-child { margin-bottom: 0; }
   .slider-row { display: flex; align-items: center; justify-content: space-between; }
   .slider-label { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 7px; }
-  .slider-value { font-size: 13px; font-weight: 700; color: #2d6a4f; min-width: 36px; text-align: right; }
+  .slider-value { font-size: 13px; font-weight: 700; color: #5038FF; min-width: 36px; text-align: right; }
   .slider-sub { font-size: 11px; color: #aaa; }
-  input[type=range] { -webkit-appearance: none; width: 100%; height: 5px; border-radius: 3px; background: #e8e8e8; outline: none; cursor: pointer; }
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 2px solid #2d6a4f; box-shadow: 0 1px 3px rgba(0,0,0,0.12); cursor: pointer; }
+  input[type=range] { -webkit-appearance: none; width: 100%; height: 5px; border-radius: 3px; background: #DDD8FF; outline: none; cursor: pointer; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 2px solid #5038FF; box-shadow: 0 1px 3px rgba(80,56,255,0.2); cursor: pointer; }
   .slider-ticks { position: relative; height: 14px; margin-top: 2px; }
   .slider-ticks span { position: absolute; transform: translateX(-50%); font-size: 9px; color: #ccc; white-space: nowrap; }
 
   /* expand */
   .expand-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 32px; cursor: pointer; user-select: none; border-radius: 16px; transition: background 0.15s; }
-  .expand-header:hover { background: #fafaf8; }
-  .expand-icon { font-size: 18px; color: #2d6a4f; font-weight: 700; transition: transform 0.2s; display: inline-block; margin-right: 12px; }
+  .expand-header:hover { background: #F5F3FF; }
+  .expand-icon { font-size: 18px; color: #5038FF; font-weight: 700; transition: transform 0.2s; display: inline-block; margin-right: 12px; }
   .expand-icon.open { transform: rotate(45deg); }
   .expand-body { padding: 0 32px 32px; display: none; }
   .expand-body.open { display: block; }
 
   /* segment boxes */
   .seg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
-  .seg-box { background: #fafaf8; border-radius: 12px; padding: 20px 22px; }
+  .seg-box { background: #F8F6FF; border-radius: 12px; padding: 20px 22px; }
   .seg-box h3 { font-size: 12px; font-weight: 700; color: #555; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.6px; display: flex; align-items: center; gap: 8px; }
 
   .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
-  .dot-green    { background: #2d6a4f; }
-  .dot-orange   { background: #d4820a; }
-  .dot-red      { background: #c0392b; }
-  .dot-private  { background: #3a86ff; }
-  .dot-asd      { background: #8338ec; }
+  .dot-green    { background: #5038FF; }
+  .dot-orange   { background: #9BBFE0; }
+  .dot-red      { background: #8A7BB5; }
+  .dot-private  { background: #2980b9; }
+  .dot-asd      { background: #8e44ad; }
 
-  .info-badge { font-size: 11px; background: #eef2ff; color: #8338ec; padding: 3px 9px; border-radius: 5px; font-weight: 600; }
+  .info-badge { font-size: 11px; background: #EEEAFF; color: #5038FF; padding: 3px 9px; border-radius: 5px; font-weight: 600; }
   .info-tag { font-size: 11px; color: #aaa; font-style: italic; }
 
   .bench-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
-  .bench-badge { font-size: 10px; background: #f5f5f3; border: 1px solid #e8e8e6; border-radius: 5px; padding: 2px 8px; color: #888; white-space: nowrap; }
+  .bench-badge { font-size: 10px; background: #F5F3FF; border: 1px solid #DDD8FF; border-radius: 5px; padding: 2px 8px; color: #888; white-space: nowrap; }
   .bench-badge b { color: #555; }
 
   /* year sliders */
   .year-sliders { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px 12px; margin: 8px 0 4px; }
   .year-sl { display: flex; flex-direction: column; gap: 2px; }
   .year-sl-label { font-size: 10px; font-weight: 700; color: #aaa; display: flex; justify-content: space-between; }
-  .year-sl-label span:last-child { color: #2d6a4f; }
+  .year-sl-label span:last-child { color: #5038FF; }
   input.year-range { height: 3px; }
 
   /* year expand toggle */
   .year-toggle { margin-top: 6px; font-size: 10px; color: #bbb; cursor: pointer; user-select: none; display: inline-flex; align-items: center; gap: 4px; }
-  .year-toggle:hover { color: #2d6a4f; }
+  .year-toggle:hover { color: #5038FF; }
   .year-toggle-arrow { transition: transform 0.2s; display: inline-block; }
   .year-toggle-arrow.open { transform: rotate(90deg); }
   .year-body { display: none; }
@@ -94,14 +94,14 @@
 
 
   .section-kpi { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 24px; }
-  .section-kpi .kpi-card { background: #f8f8f8; }
+  .section-kpi .kpi-card { background: #F8F6FF; }
 
   /* fin-scenario button */
   .fin-btn { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600;
-    padding: 7px 16px; border-radius: 8px; border: 1.5px solid #d4820a; color: #d4820a;
+    padding: 7px 16px; border-radius: 8px; border: 1.5px solid #9BBFE0; color: #5038FF;
     background: #fff; cursor: pointer; transition: all 0.18s; user-select: none; }
-  .fin-btn:hover { background: #fff8ef; }
-  .fin-btn.active { background: #d4820a; color: #fff; border-color: #d4820a; }
+  .fin-btn:hover { background: #EEEAFF; }
+  .fin-btn.active { background: #5038FF; color: #fff; border-color: #5038FF; }
   .fin-btn .fin-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 </style>
 </head>
@@ -432,7 +432,7 @@ const clamp = (v,lo=0,hi=500) => Math.max(lo,Math.min(hi,v));
 
 function grad(el) {
   const p = (el.value - el.min) / (el.max - el.min) * 100;
-  el.style.background = `linear-gradient(to right,#2d6a4f ${p}%,#e8e8e8 ${p}%)`;
+  el.style.background = `linear-gradient(to right,#5038FF ${p}%,#DDD8FF ${p}%)`;
 }
 function buildTicks(sliderId, values) {
   const sl = document.getElementById(sliderId);
@@ -507,48 +507,48 @@ const OLX_ARPU_LINE = YEARS.map(() => +(3500000 / (468574 * 12)).toFixed(4));
 
 const OLX_DS = (data) => ({ label:'OLX 2025', data, borderColor:'#999', backgroundColor:'transparent', borderWidth:1.5, borderDash:[3,3], pointRadius:0, tension:0, pointStyle:'line', order:ORD_OLX });
 
-const cRevTop  = lineChart('c-rev-top',  [ ds('Финмодель',FIN_REV,'#d4820a',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_REV,'#c0392b',[6,3],undefined,ORD_OPR), ds('New',MNZ_REV,'#2d6a4f',[],undefined,ORD_NEW), OLX_DS(OLX_LINE) ], fmtM);
-const cSellTop = lineChart('c-sell-top', [ ds('Финмодель',FIN_LIST,'#d4820a',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_LIST,'#c0392b',[6,3],undefined,ORD_OPR), ds('New',MNZ_LIST,'#2d6a4f',[],undefined,ORD_NEW), OLX_DS(OLX_SELL_LINE) ], fmtK);
+const cRevTop  = lineChart('c-rev-top',  [ ds('Финмодель',FIN_REV,'#9BBFE0',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_REV,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('New',MNZ_REV,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_LINE) ], fmtM);
+const cSellTop = lineChart('c-sell-top', [ ds('Финмодель',FIN_LIST,'#9BBFE0',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_LIST,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('New',MNZ_LIST,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_SELL_LINE) ], fmtK);
 
-const cMauTop  = lineChart('c-mau-top',  [ ds('Финмодель',FIN_MAU,'#d4820a',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_MAU,'#c0392b',[6,3],undefined,ORD_OPR), ds('New',MNZ_MAU,'#2d6a4f',[],undefined,ORD_NEW), OLX_DS(OLX_MAU_LINE) ], fmtK);
-const cArpuTop = lineChart('c-arpu-top', [ ds('Финмодель',FIN_ARPU,'#d4820a',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_ARPU,'#c0392b',[6,3],undefined,ORD_OPR), ds('New',MNZ_ARPU,'#2d6a4f',[],undefined,ORD_NEW), OLX_DS(OLX_ARPU_LINE) ], v=>'$'+v.toFixed(3));
+const cMauTop  = lineChart('c-mau-top',  [ ds('Финмодель',FIN_MAU,'#9BBFE0',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_MAU,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('New',MNZ_MAU,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_MAU_LINE) ], fmtK);
+const cArpuTop = lineChart('c-arpu-top', [ ds('Финмодель',FIN_ARPU,'#9BBFE0',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_ARPU,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('New',MNZ_ARPU,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_ARPU_LINE) ], v=>'$'+v.toFixed(3));
 
 // Segment revenue — idx: 0=fin, 1=base, 2=scenario
-const cPrivRev = lineChart('c-p-rev', [ ds('Финмодель · Private',FIN_PRIV_REV,'#d4820a',[4,3],1.5,ORD_FIN), ds('Private · опермодель',PRIV_REV,'#2980b9',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_REV,'#2980b9',[],undefined,ORD_NEW) ], fmtM);
-const cAsdRev  = lineChart('c-a-rev', [ ds('Финмодель · Pro',FIN_ASD_REV,'#d4820a',[4,3],1.5,ORD_FIN),     ds('Pro · опермодель',ASD_REV,'#8e44ad',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_REV,'#8e44ad',[],undefined,ORD_NEW) ], fmtM);
+const cPrivRev = lineChart('c-p-rev', [ ds('Финмодель · Private',FIN_PRIV_REV,'#9BBFE0',[4,3],1.5,ORD_FIN), ds('Private · опермодель',PRIV_REV,'#8A7BB5',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
+const cAsdRev  = lineChart('c-a-rev', [ ds('Финмодель · Pro',FIN_ASD_REV,'#9BBFE0',[4,3],1.5,ORD_FIN),     ds('Pro · опермодель',ASD_REV,'#8A7BB5',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
 
 // Sellers — idx: 0=base, 1=scenario
 const OLX_PRIV_SELL = YEARS.map(() => 423977);
 const OLX_ASD_SELL  = YEARS.map(() => 27433);
 const OLX_PRIV_CR   = YEARS.map(() => 0.01);
 const OLX_ASD_CR    = YEARS.map(() => 0.64);
-const cPrivSell= lineChart('c-p-sell', [ ds('Private · опермодель',PRIV_LIST,'#2980b9',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_LIST,'#2980b9',[],undefined,ORD_NEW), OLX_DS(OLX_PRIV_SELL) ], fmtK);
-const cAsdSell    = lineChart('c-a-sell',        [ ds('Pro · опермодель',ASD_LIST,'#8e44ad',[5,3],undefined,ORD_OPR), ds('Pro · new',ASD_LIST,'#8e44ad',[],undefined,ORD_NEW), OLX_DS(OLX_ASD_SELL) ], fmtK);
+const cPrivSell= lineChart('c-p-sell', [ ds('Private · опермодель',PRIV_LIST,'#8A7BB5',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_LIST,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_PRIV_SELL) ], fmtK);
+const cAsdSell    = lineChart('c-a-sell',        [ ds('Pro · опермодель',ASD_LIST,'#8A7BB5',[5,3],undefined,ORD_OPR), ds('Pro · new',ASD_LIST,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_ASD_SELL) ], fmtK);
 
 // CR — idx: 0=oper, 1=new
-const cCRPriv  = lineChart('c-cr-priv',  [ ds('Private · опермодель',PRIV_CR,'#2980b9',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_CR,'#2980b9',[],undefined,ORD_NEW) ], v=>(v*100).toFixed(2)+'%');
-const cCRPro   = lineChart('c-cr-pro',   [ ds('Pro · опермодель',ASD_CR,'#8e44ad',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_CR,'#8e44ad',[],undefined,ORD_NEW) ],     v=>(v*100).toFixed(1)+'%');
+const cCRPriv  = lineChart('c-cr-priv',  [ ds('Private · опермодель',PRIV_CR,'#8A7BB5',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_CR,'#5038FF',[],undefined,ORD_NEW) ], v=>(v*100).toFixed(2)+'%');
+const cCRPro   = lineChart('c-cr-pro',   [ ds('Pro · опермодель',ASD_CR,'#8A7BB5',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_CR,'#5038FF',[],undefined,ORD_NEW) ],     v=>(v*100).toFixed(1)+'%');
 
 // ARPPU — idx: 0=oper, 1=new
-const cARPPUPriv = lineChart('c-arppu-priv', [ ds('Private · опермодель',PRIV_ARPPU,'#2980b9',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_ARPPU,'#2980b9',[],undefined,ORD_NEW) ], v=>'$'+v.toFixed(2));
-const cARPPUPro  = lineChart('c-arppu-pro',  [ ds('Pro · опермодель',ASD_ARPPU,'#8e44ad',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_ARPPU,'#8e44ad',[],undefined,ORD_NEW) ],     v=>'$'+v.toFixed(2));
+const cARPPUPriv = lineChart('c-arppu-priv', [ ds('Private · опермодель',PRIV_ARPPU,'#8A7BB5',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_ARPPU,'#5038FF',[],undefined,ORD_NEW) ], v=>'$'+v.toFixed(2));
+const cARPPUPro  = lineChart('c-arppu-pro',  [ ds('Pro · опермодель',ASD_ARPPU,'#8A7BB5',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_ARPPU,'#5038FF',[],undefined,ORD_NEW) ],     v=>'$'+v.toFixed(2));
 
 // Items — idx: 0=fin, 1=base, 2=scenario
-const cItemsPriv = lineChart('c-items-priv', [ ds('Финмодель · Private',FIN_PRIV_ITEMS,'#d4820a',[4,3],1.5,ORD_FIN), ds('Private · опермодель',PRIV_ITEMS,'#2980b9',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_ITEMS,'#2980b9',[],undefined,ORD_NEW) ], fmtKI);
-const cItemsAsd  = lineChart('c-items-asd',  [ ds('Финмодель · Pro',FIN_ASD_ITEMS,'#d4820a',[4,3],1.5,ORD_FIN),     ds('Pro · опермодель',ASD_ITEMS,'#8e44ad',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_ITEMS,'#8e44ad',[],undefined,ORD_NEW) ], fmtKI);
+const cItemsPriv = lineChart('c-items-priv', [ ds('Финмодель · Private',FIN_PRIV_ITEMS,'#9BBFE0',[4,3],1.5,ORD_FIN), ds('Private · опермодель',PRIV_ITEMS,'#8A7BB5',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_ITEMS,'#5038FF',[],undefined,ORD_NEW) ], fmtKI);
+const cItemsAsd  = lineChart('c-items-asd',  [ ds('Финмодель · Pro',FIN_ASD_ITEMS,'#9BBFE0',[4,3],1.5,ORD_FIN),     ds('Pro · опермодель',ASD_ITEMS,'#8A7BB5',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_ITEMS,'#5038FF',[],undefined,ORD_NEW) ], fmtKI);
 
 // Prices (static reference) — 4 charts with OLX reference line
 const fmtUSD = v => '$'+v.toFixed(3);
 const olxDs = (data) => ({ label:'OLX 2025', data, borderColor:'#999', backgroundColor:'transparent', borderWidth:1.5, borderDash:[4,4], pointRadius:0, tension:0, pointStyle:'line', order:ORD_OLX });
-const cPriceBBLGoods = lineChart('c-price-bbl-goods', [ ds('MNZ · Goods размещение', PRICE_BBL_GOODS,'#fb5607',[],undefined,ORD_OPR), olxDs(OLX_BBL_GOODS) ], fmtUSD);
-const cPriceBBLServ  = lineChart('c-price-bbl-serv',  [ ds('MNZ · Services размещение', PRICE_BBL_SERV,'#06d6a0',[],undefined,ORD_OPR), olxDs(OLX_BBL_SERV)  ], fmtUSD);
-const cPriceBSTGoods = lineChart('c-price-bst-goods', [ ds('MNZ · Goods продвижение',  PRICE_BST_GOODS,'#fb5607',[],undefined,ORD_OPR), olxDs(OLX_BST_GOODS) ], fmtUSD);
-const cPriceBSTServ  = lineChart('c-price-bst-serv',  [ ds('MNZ · Services продвижение',PRICE_BST_SERV,'#06d6a0',[],undefined,ORD_OPR), olxDs(OLX_BST_SERV)  ], fmtUSD);
+const cPriceBBLGoods = lineChart('c-price-bbl-goods', [ ds('MNZ · Goods размещение', PRICE_BBL_GOODS,'#5038FF',[],undefined,ORD_OPR), olxDs(OLX_BBL_GOODS) ], fmtUSD);
+const cPriceBBLServ  = lineChart('c-price-bbl-serv',  [ ds('MNZ · Services размещение', PRICE_BBL_SERV,'#5038FF',[],undefined,ORD_OPR), olxDs(OLX_BBL_SERV)  ], fmtUSD);
+const cPriceBSTGoods = lineChart('c-price-bst-goods', [ ds('MNZ · Goods продвижение',  PRICE_BST_GOODS,'#5038FF',[],undefined,ORD_OPR), olxDs(OLX_BST_GOODS) ], fmtUSD);
+const cPriceBSTServ  = lineChart('c-price-bst-serv',  [ ds('MNZ · Services продвижение',PRICE_BST_SERV,'#5038FF',[],undefined,ORD_OPR), olxDs(OLX_BST_SERV)  ], fmtUSD);
 
 // Verticals
-const cVGoods = lineChart('c-v-goods', [ ds('Финмодель',FIN_GOODS_REV,'#d4820a',[4,3],1.5,ORD_FIN), ds('Goods · опермодель',GOODS_REV,'#fb5607',[6,3],undefined,ORD_OPR), ds('Goods · new',GOODS_REV,'#fb5607',[],undefined,ORD_NEW) ], fmtM);
-const cVServ  = lineChart('c-v-serv',  [ ds('Финмодель',FIN_SERV_REV,'#d4820a',[4,3],1.5,ORD_FIN),  ds('Services · опермодель',SERV_REV,'#06d6a0',[6,3],undefined,ORD_OPR), ds('Services · new',SERV_REV,'#06d6a0',[],undefined,ORD_NEW) ], fmtM);
-const cVTotal = lineChart('c-v-total', [ ds('Финмодель',FIN_REV,'#d4820a',[],undefined,ORD_FIN), ds('Опермодель',MNZ_REV,'#c0392b',[6,3],undefined,ORD_OPR), ds('New · итого',MNZ_REV,'#2d6a4f',[],undefined,ORD_NEW) ], fmtM);
+const cVGoods = lineChart('c-v-goods', [ ds('Финмодель',FIN_GOODS_REV,'#9BBFE0',[4,3],1.5,ORD_FIN), ds('Goods · опермодель',GOODS_REV,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('Goods · new',GOODS_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
+const cVServ  = lineChart('c-v-serv',  [ ds('Финмодель',FIN_SERV_REV,'#9BBFE0',[4,3],1.5,ORD_FIN),  ds('Services · опермодель',SERV_REV,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('Services · new',SERV_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
+const cVTotal = lineChart('c-v-total', [ ds('Финмодель',FIN_REV,'#9BBFE0',[],undefined,ORD_FIN), ds('Опермодель',MNZ_REV,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('New · итого',MNZ_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
 
 // ══════════════════════════════════════════════════════════
 // FIN SCENARIO TOGGLE
