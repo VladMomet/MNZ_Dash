@@ -636,14 +636,11 @@ function updateAll() {
 
   const scTotalRev  = scPrivRev.map((v,i)  => v + scAsdRev[i]);
   const scTotalList = scPrivList.map((v,i) => v + scAsdList[i]);
-  // ARPU total: scale MNZ_ARPU by revenue uplift ratio
-  // Avoids drift from segment rounding vs Excel-computed MNZ_ARPU
-  // ARPU = Revenue / (Sellers × 12)
-  // In fin scenario sellers base also changes, so direct division is correct.
-  // In normal mode this matches the ratio trick (MNZ_ARPU * rev/MNZ_REV / (sellers/MNZ_LIST))
-  const scTotalArpu = scTotalRev.map((r,i) =>
-    scTotalList[i] > 0 ? r / (scTotalList[i] * 12) : 0
-  );
+  // Base: scale MNZ_ARPU by revenue ratio → "New" line matches опермодель exactly
+  // Fin scenarios: direct revenue/sellers — sellers count also changed, ratio would overstate ARPU
+  const scTotalArpu = finMode === 0
+    ? MNZ_ARPU.map((a,i) => MNZ_REV[i] > 0 ? a * scTotalRev[i] / MNZ_REV[i] : a)
+    : scTotalRev.map((r,i) => scTotalList[i] > 0 ? r / (scTotalList[i] * 12) : 0);
 
   // Update segment charts
   // Revenue: [0]=fin [1]=base [2]=scenario
