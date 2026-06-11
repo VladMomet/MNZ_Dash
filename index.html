@@ -65,7 +65,7 @@
 
   .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
   .dot-green    { background: #5038FF; }
-  .dot-orange   { background: #9BBFE0; }
+  .dot-orange   { background: #F4A7C3; }
   .dot-red      { background: #8A7BB5; }
   .dot-private  { background: #2980b9; }
   .dot-asd      { background: #8e44ad; }
@@ -98,7 +98,7 @@
 
   /* fin-scenario button */
   .fin-btn { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600;
-    padding: 7px 16px; border-radius: 8px; border: 1.5px solid #9BBFE0; color: #5038FF;
+    padding: 7px 16px; border-radius: 8px; border: 1.5px solid #DDD8FF; color: #5038FF;
     background: #fff; cursor: pointer; transition: all 0.18s; user-select: none; }
   .fin-btn:hover { background: #EEEAFF; }
   .fin-btn.active { background: #5038FF; color: #fff; border-color: #5038FF; }
@@ -124,7 +124,10 @@
     </div>
   </div>
 
-  <div class="chart-wrap"><canvas id="c-rev-top"></canvas></div>
+  <div style="margin-bottom:20px">
+    <div class="chart-title">Выручка · годовая, $</div>
+    <div class="chart-wrap"><canvas id="c-rev-top"></canvas></div>
+  </div>
 
   <hr class="divider">
 
@@ -133,9 +136,11 @@
     <div><div class="chart-title">ARPU · среднемесячный, $</div><div class="chart-wrap-sm"><canvas id="c-arpu-top"></canvas></div></div>
   </div>
 
-  <div>
+  <hr class="divider">
+
+  <div style="margin-bottom:20px">
     <div class="chart-title">MAU · среднемесячные</div>
-    <div>
+    <div class="slider-block">
       <div class="slider-row">
         <div class="slider-label" style="font-size:12px">MAU · общий аплифт <span style="font-size:10px;color:#bbb;font-weight:400">↔ синхронизирован с Private Sellers</span></div>
         <div class="slider-value" id="p-mau-v">+0%</div>
@@ -145,7 +150,7 @@
       <div class="slider-ticks"><span>-50</span><span>0</span><span>100</span><span>200</span><span>300</span><span>500</span></div>
     </div>
     <div id="mau-yexp" style="display:none"></div>
-    <div class="chart-wrap-sm"><canvas id="c-mau-top"></canvas></div>
+    <div class="chart-wrap"><canvas id="c-mau-top"></canvas></div>
   </div>
 </div>
 
@@ -234,11 +239,11 @@
     <!-- Revenue: private and pro separate -->
     <div class="grid-2" style="margin-bottom:20px">
       <div>
-        <div class="chart-title">Выручка · Private</div>
+        <div class="chart-title">Выручка · Private · годовая, $</div>
         <div class="chart-wrap-sm"><canvas id="c-p-rev"></canvas></div>
       </div>
       <div>
-        <div class="chart-title">Выручка · Pro (ASD)</div>
+        <div class="chart-title">Выручка · Pro (ASD) · годовая, $</div>
         <div class="chart-wrap-sm"><canvas id="c-a-rev"></canvas></div>
       </div>
     </div>
@@ -246,11 +251,11 @@
     <!-- Sellers: private and pro -->
     <div class="grid-2" style="margin-bottom:20px">
       <div>
-        <div class="chart-title">Селлеры · Private</div>
+        <div class="chart-title">Селлеры · Private · среднемесячные</div>
         <div class="chart-wrap-xs"><canvas id="c-p-sell"></canvas></div>
       </div>
       <div>
-        <div class="chart-title">Селлеры · Pro (ASD)</div>
+        <div class="chart-title">Селлеры · Pro (ASD) · среднемесячные</div>
         <div class="chart-wrap-xs"><canvas id="c-a-sell"></canvas></div>
       </div>
     </div>
@@ -258,11 +263,11 @@
     <!-- CR -->
     <div class="grid-2" style="margin-bottom:20px">
       <div>
-        <div class="chart-title">CR to Paid · Private</div>
+        <div class="chart-title">CR to Paid · Private · среднемесячный</div>
         <div class="chart-wrap-xs"><canvas id="c-cr-priv"></canvas></div>
       </div>
       <div>
-        <div class="chart-title">CR to Paid · Pro (ASD)</div>
+        <div class="chart-title">CR to Paid · Pro (ASD) · среднемесячный</div>
         <div class="chart-wrap-xs"><canvas id="c-cr-pro"></canvas></div>
       </div>
     </div>
@@ -270,31 +275,15 @@
     <!-- ARPPU -->
     <div class="grid-2" style="margin-bottom:20px">
       <div>
-        <div class="chart-title">ARPPU · Private, $</div>
+        <div class="chart-title">ARPPU · Private · среднемесячный, $</div>
         <div class="chart-wrap-xs"><canvas id="c-arppu-priv"></canvas></div>
       </div>
       <div>
-        <div class="chart-title">ARPPU · Pro (ASD), $</div>
+        <div class="chart-title">ARPPU · Pro (ASD) · среднемесячный, $</div>
         <div class="chart-wrap-xs"><canvas id="c-arppu-pro"></canvas></div>
       </div>
     </div>
 
-    <!-- Items: справочно -->
-    <hr class="divider">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-      <div class="chart-title" style="margin-bottom:0">Айтемы · Monthly Listings</div>
-      <span class="info-tag">справочно · растут линейно с числом селлеров</span>
-    </div>
-    <div class="grid-2">
-      <div>
-        <div class="chart-title">Айтемы · Private vs Финмодель</div>
-        <div class="chart-wrap-sm"><canvas id="c-items-priv"></canvas></div>
-      </div>
-      <div>
-        <div class="chart-title">Айтемы · Pro (ASD) vs Финмодель</div>
-        <div class="chart-wrap-sm"><canvas id="c-items-asd"></canvas></div>
-      </div>
-    </div>
 
   </div>
 </div>
@@ -393,8 +382,10 @@ const MNZ_MAU = [76748,634798,1983754,3432720,4084132,4741320,5565955,6383986,71
 const FIN_MAU = [92845,1108516,3376546,7339453,10855263,14401486,17742046,19879282,21948540,24236064];
 
 // Fin model revenue per segment
-const FIN_PRIV_REV = [62,2615,61812,718520,1762274,3098200,4111730,4661584,5207139,5816542];
-const FIN_ASD_REV  = [11,14420,531114,3684247,7228921,12708943,16866485,19122009,21359898,23859692];
+// Goods Private + Services Private
+const FIN_PRIV_REV = [182,5757,90623,814473,2470312,4467459,6049547,6908700,7774549,8749898];
+// Goods ASD + Services ASD
+const FIN_ASD_REV  = [39,32705,809309,4508720,10859420,18325698,24815489,28339773,31891517,35892436];
 
 // Verticals
 const GOODS_REV = [1463.52,91901.17,250813.67,514433.02,960469.47,1476015.71,2200868.38,3191336.96,4557206.71,6433833.30];
@@ -507,35 +498,32 @@ const OLX_ARPU_LINE = YEARS.map(() => +(3500000 / (468574 * 12)).toFixed(4));
 
 const OLX_DS = (data) => ({ label:'OLX 2025', data, borderColor:'#999', backgroundColor:'transparent', borderWidth:1.5, borderDash:[3,3], pointRadius:0, tension:0, pointStyle:'line', order:ORD_OLX });
 
-const cRevTop  = lineChart('c-rev-top',  [ ds('Финмодель',FIN_REV,'#9BBFE0',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_REV,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('New',MNZ_REV,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_LINE) ], fmtM);
-const cSellTop = lineChart('c-sell-top', [ ds('Финмодель',FIN_LIST,'#9BBFE0',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_LIST,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('New',MNZ_LIST,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_SELL_LINE) ], fmtK);
+const cRevTop  = lineChart('c-rev-top',  [ ds('Финмодель',FIN_REV,'#F4A7C3',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_REV,'#9B8CFF',[6,3],undefined,ORD_OPR), ds('Сценарий',MNZ_REV,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_LINE) ], fmtM);
+const cSellTop = lineChart('c-sell-top', [ ds('Финмодель',FIN_LIST,'#F4A7C3',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_LIST,'#9B8CFF',[6,3],undefined,ORD_OPR), ds('Сценарий',MNZ_LIST,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_SELL_LINE) ], fmtK);
 
-const cMauTop  = lineChart('c-mau-top',  [ ds('Финмодель',FIN_MAU,'#9BBFE0',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_MAU,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('New',MNZ_MAU,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_MAU_LINE) ], fmtK);
-const cArpuTop = lineChart('c-arpu-top', [ ds('Финмодель',FIN_ARPU,'#9BBFE0',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_ARPU,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('New',MNZ_ARPU,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_ARPU_LINE) ], v=>'$'+v.toFixed(3));
+const cMauTop  = lineChart('c-mau-top',  [ ds('Финмодель',FIN_MAU,'#F4A7C3',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_MAU,'#9B8CFF',[6,3],undefined,ORD_OPR), ds('Сценарий',MNZ_MAU,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_MAU_LINE) ], fmtK);
+const cArpuTop = lineChart('c-arpu-top', [ ds('Финмодель',FIN_ARPU,'#F4A7C3',[],undefined,ORD_FIN), ds('MNZ · опермодель',MNZ_ARPU,'#9B8CFF',[6,3],undefined,ORD_OPR), ds('Сценарий',MNZ_ARPU,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_ARPU_LINE) ], v=>'$'+v.toFixed(3));
 
 // Segment revenue — idx: 0=fin, 1=base, 2=scenario
-const cPrivRev = lineChart('c-p-rev', [ ds('Финмодель · Private',FIN_PRIV_REV,'#9BBFE0',[4,3],1.5,ORD_FIN), ds('Private · опермодель',PRIV_REV,'#8A7BB5',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
-const cAsdRev  = lineChart('c-a-rev', [ ds('Финмодель · Pro',FIN_ASD_REV,'#9BBFE0',[4,3],1.5,ORD_FIN),     ds('Pro · опермодель',ASD_REV,'#8A7BB5',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
+const cPrivRev = lineChart('c-p-rev', [ ds('Финмодель · Private',FIN_PRIV_REV,'#F4A7C3',[],undefined,ORD_FIN), ds('Private · опермодель',PRIV_REV,'#9B8CFF',[5,3],undefined,ORD_OPR), ds('Private · сценарий',PRIV_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
+const cAsdRev  = lineChart('c-a-rev', [ ds('Финмодель · Pro',FIN_ASD_REV,'#F4A7C3',[],undefined,ORD_FIN),     ds('Pro · опермодель',ASD_REV,'#9B8CFF',[5,3],undefined,ORD_OPR),     ds('Pro · сценарий',ASD_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
 
 // Sellers — idx: 0=base, 1=scenario
 const OLX_PRIV_SELL = YEARS.map(() => 423977);
 const OLX_ASD_SELL  = YEARS.map(() => 27433);
 const OLX_PRIV_CR   = YEARS.map(() => 0.01);
 const OLX_ASD_CR    = YEARS.map(() => 0.64);
-const cPrivSell= lineChart('c-p-sell', [ ds('Private · опермодель',PRIV_LIST,'#8A7BB5',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_LIST,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_PRIV_SELL) ], fmtK);
-const cAsdSell    = lineChart('c-a-sell',        [ ds('Pro · опермодель',ASD_LIST,'#8A7BB5',[5,3],undefined,ORD_OPR), ds('Pro · new',ASD_LIST,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_ASD_SELL) ], fmtK);
+const cPrivSell= lineChart('c-p-sell', [ ds('Private · опермодель',PRIV_LIST,'#9B8CFF',[5,3],undefined,ORD_OPR), ds('Private · сценарий',PRIV_LIST,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_PRIV_SELL) ], fmtK);
+const cAsdSell    = lineChart('c-a-sell',        [ ds('Pro · опермодель',ASD_LIST,'#9B8CFF',[5,3],undefined,ORD_OPR), ds('Pro · сценарий',ASD_LIST,'#5038FF',[],undefined,ORD_NEW), OLX_DS(OLX_ASD_SELL) ], fmtK);
 
 // CR — idx: 0=oper, 1=new
-const cCRPriv  = lineChart('c-cr-priv',  [ ds('Private · опермодель',PRIV_CR,'#8A7BB5',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_CR,'#5038FF',[],undefined,ORD_NEW) ], v=>(v*100).toFixed(2)+'%');
-const cCRPro   = lineChart('c-cr-pro',   [ ds('Pro · опермодель',ASD_CR,'#8A7BB5',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_CR,'#5038FF',[],undefined,ORD_NEW) ],     v=>(v*100).toFixed(1)+'%');
+const cCRPriv  = lineChart('c-cr-priv',  [ ds('Private · опермодель',PRIV_CR,'#9B8CFF',[5,3],undefined,ORD_OPR), ds('Private · сценарий',PRIV_CR,'#5038FF',[],undefined,ORD_NEW) ], v=>(v*100).toFixed(2)+'%');
+const cCRPro   = lineChart('c-cr-pro',   [ ds('Pro · опермодель',ASD_CR,'#9B8CFF',[5,3],undefined,ORD_OPR),     ds('Pro · сценарий',ASD_CR,'#5038FF',[],undefined,ORD_NEW) ],     v=>(v*100).toFixed(1)+'%');
 
 // ARPPU — idx: 0=oper, 1=new
-const cARPPUPriv = lineChart('c-arppu-priv', [ ds('Private · опермодель',PRIV_ARPPU,'#8A7BB5',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_ARPPU,'#5038FF',[],undefined,ORD_NEW) ], v=>'$'+v.toFixed(2));
-const cARPPUPro  = lineChart('c-arppu-pro',  [ ds('Pro · опермодель',ASD_ARPPU,'#8A7BB5',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_ARPPU,'#5038FF',[],undefined,ORD_NEW) ],     v=>'$'+v.toFixed(2));
+const cARPPUPriv = lineChart('c-arppu-priv', [ ds('Private · опермодель',PRIV_ARPPU,'#9B8CFF',[5,3],undefined,ORD_OPR), ds('Private · сценарий',PRIV_ARPPU,'#5038FF',[],undefined,ORD_NEW) ], v=>'$'+v.toFixed(2));
+const cARPPUPro  = lineChart('c-arppu-pro',  [ ds('Pro · опермодель',ASD_ARPPU,'#9B8CFF',[5,3],undefined,ORD_OPR),     ds('Pro · сценарий',ASD_ARPPU,'#5038FF',[],undefined,ORD_NEW) ],     v=>'$'+v.toFixed(2));
 
-// Items — idx: 0=fin, 1=base, 2=scenario
-const cItemsPriv = lineChart('c-items-priv', [ ds('Финмодель · Private',FIN_PRIV_ITEMS,'#9BBFE0',[4,3],1.5,ORD_FIN), ds('Private · опермодель',PRIV_ITEMS,'#8A7BB5',[5,3],undefined,ORD_OPR), ds('Private · new',PRIV_ITEMS,'#5038FF',[],undefined,ORD_NEW) ], fmtKI);
-const cItemsAsd  = lineChart('c-items-asd',  [ ds('Финмодель · Pro',FIN_ASD_ITEMS,'#9BBFE0',[4,3],1.5,ORD_FIN),     ds('Pro · опермодель',ASD_ITEMS,'#8A7BB5',[5,3],undefined,ORD_OPR),     ds('Pro · new',ASD_ITEMS,'#5038FF',[],undefined,ORD_NEW) ], fmtKI);
 
 // Prices (static reference) — 4 charts with OLX reference line
 const fmtUSD = v => '$'+v.toFixed(3);
@@ -546,9 +534,9 @@ const cPriceBSTGoods = lineChart('c-price-bst-goods', [ ds('MNZ · Goods про�
 const cPriceBSTServ  = lineChart('c-price-bst-serv',  [ ds('MNZ · Services продвижение',PRICE_BST_SERV,'#5038FF',[],undefined,ORD_OPR), olxDs(OLX_BST_SERV)  ], fmtUSD);
 
 // Verticals
-const cVGoods = lineChart('c-v-goods', [ ds('Финмодель',FIN_GOODS_REV,'#9BBFE0',[4,3],1.5,ORD_FIN), ds('Goods · опермодель',GOODS_REV,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('Goods · new',GOODS_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
-const cVServ  = lineChart('c-v-serv',  [ ds('Финмодель',FIN_SERV_REV,'#9BBFE0',[4,3],1.5,ORD_FIN),  ds('Services · опермодель',SERV_REV,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('Services · new',SERV_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
-const cVTotal = lineChart('c-v-total', [ ds('Финмодель',FIN_REV,'#9BBFE0',[],undefined,ORD_FIN), ds('Опермодель',MNZ_REV,'#8A7BB5',[6,3],undefined,ORD_OPR), ds('New · итого',MNZ_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
+const cVGoods = lineChart('c-v-goods', [ ds('Финмодель',FIN_GOODS_REV,'#F4A7C3',[],undefined,ORD_FIN), ds('Goods · опермодель',GOODS_REV,'#9B8CFF',[6,3],undefined,ORD_OPR), ds('Goods · сценарий',GOODS_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
+const cVServ  = lineChart('c-v-serv',  [ ds('Финмодель',FIN_SERV_REV,'#F4A7C3',[],undefined,ORD_FIN),  ds('Services · опермодель',SERV_REV,'#9B8CFF',[6,3],undefined,ORD_OPR), ds('Services · сценарий',SERV_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
+const cVTotal = lineChart('c-v-total', [ ds('Финмодель',FIN_REV,'#F4A7C3',[],undefined,ORD_FIN), ds('Опермодель',MNZ_REV,'#9B8CFF',[6,3],undefined,ORD_OPR), ds('New · итого',MNZ_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
 
 // ══════════════════════════════════════════════════════════
 // FIN SCENARIO TOGGLE
@@ -588,9 +576,9 @@ function updateAll() {
   const basePrivItems = finMAU ? PRIV_ITEMS.map((v,i) => v * mauRatio[i]) : PRIV_ITEMS;
   const baseMau       = finMAU ? FIN_MAU : MNZ_MAU;
 
-  // Pro sellers in fin scenario: FIN_ASD_ITEMS / 30 items-per-seller
+  // Pro sellers: fin scenario uses FIN_ASD_ITEMS/30, oper model uses ASD_LIST
   const baseAsdList  = finPro ? FIN_ASD_ITEMS.map(v => v / 30) : ASD_LIST;
-  const baseAsdItems = finPro ? FIN_ASD_ITEMS  : ASD_ITEMS;
+  const baseAsdItems = finPro ? FIN_ASD_ITEMS : ASD_ITEMS;
 
   // ARPPU base:
   // - base scenario: oper model ARPPU (from Excel)
@@ -603,7 +591,7 @@ function updateAll() {
         return gW * FIN_GOODS_PRIV_ARPPU[i] + sW * FIN_SERV_PRIV_ARPPU[i];
       })
     : PRIV_ARPPU;
-  const baseAsdARPPU = finPro
+  const baseAsdARPPU = finMAU
     ? ASD_PAYING.map((total,i) => {
         const gW = GOODS_ASD_PAYING[i] / total;
         const sW = SERV_ASD_PAYING[i]  / total;
@@ -654,11 +642,7 @@ function updateAll() {
   cCRPro.data.datasets[1].data    = scAsdCR;
   cARPPUPriv.data.datasets[1].data = scPrivARPPU;
   cARPPUPro.data.datasets[1].data  = scAsdARPPU;
-  // Items: [0]=finModel [1]=base [2]=scenario
-  cItemsPriv.data.datasets[2].data = scPrivItems;
-  cItemsAsd.data.datasets[2].data  = scAsdItems;
-
-  [cPrivRev,cAsdRev,cPrivSell,cAsdSell,cCRPriv,cCRPro,cARPPUPriv,cARPPUPro,cItemsPriv,cItemsAsd].forEach(c=>c.update('none'));
+  [cPrivRev,cAsdRev,cPrivSell,cAsdSell,cCRPriv,cCRPro,cARPPUPriv,cARPPUPro].forEach(c=>c.update('none'));
 
   // MAU: fin-scenario → FIN_MAU; otherwise slider-based
   const scMau = scMauBase;
@@ -742,7 +726,7 @@ function toggleSection(key) {
   body.classList.toggle('open', !wasOpen);
   icon.classList.toggle('open', !wasOpen);
   if (!wasOpen) {
-    if (key==='seg') setTimeout(()=>{ [cPrivRev,cAsdRev,cPrivSell,cAsdSell,cCRPriv,cCRPro,cARPPUPriv,cARPPUPro,cItemsPriv,cItemsAsd].forEach(c=>c.resize()); }, 60);
+    if (key==='seg') setTimeout(()=>{ [cPrivRev,cAsdRev,cPrivSell,cAsdSell,cCRPriv,cCRPro,cARPPUPriv,cARPPUPro].forEach(c=>c.resize()); }, 60);
     if (key==='vert')   setTimeout(()=>{ [cVGoods,cVServ,cVTotal].forEach(c=>c.resize()); }, 60);
     if (key==='prices') setTimeout(()=>{ [cPriceBBLGoods,cPriceBBLServ,cPriceBSTGoods,cPriceBSTServ].forEach(c=>c.resize()); }, 60);
   }
