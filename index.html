@@ -364,7 +364,13 @@ const ASD_CR     = ASD_PAYING.map((p,i)  => p / ASD_LIST[i]);
 const PRIV_ARPPU = PRIV_REV.map((r,i) => r / (PRIV_PAYING[i] * 12));
 const ASD_ARPPU  = ASD_REV.map((r,i)  => r / (ASD_PAYING[i]  * 12));
 
-// Fin model ARPPU per vertical (provided explicitly)
+// Oper model ARPPU per vertical (base scenario, no buttons)
+const OPER_GOODS_PRIV_ARPPU = [0.7671,0.7947,0.9050,1.0248,1.2116,1.5229,1.9221,2.4171,3.0516,3.8582];
+const OPER_SERV_PRIV_ARPPU  = [3.4461,3.5429,4.1759,3.6209,1.8609,2.3709,3.0280,3.8470,4.8992,6.2380];
+const OPER_GOODS_ASD_ARPPU  = [2.8502,5.4239,6.7893,8.4179,10.7731,13.2670,16.4275,20.2820,25.1400,31.2405];
+const OPER_SERV_ASD_ARPPU   = [4.9643,3.1004,3.8283,3.7773,4.4003,5.6476,7.2870,9.3833,12.1543,15.8036];
+
+// Fin model ARPPU per vertical (MAU / MAU+Pro scenarios)
 const FIN_GOODS_PRIV_ARPPU = [0.7671,0.9632,1.3662,1.6099,1.9033,2.3924,3.0194,3.7970,4.7939,6.0609];
 const FIN_SERV_PRIV_ARPPU  = [3.4461,4.2918,6.3023,5.6881,2.9233,3.7244,4.7567,6.0433,7.6963,9.7993];
 const FIN_GOODS_ASD_ARPPU  = [2.8502,6.5699,10.2462,13.2237,16.9236,20.8413,25.8061,31.8612,39.4926,49.0760];
@@ -582,24 +588,16 @@ function updateAll() {
 
   // ARPPU base:
   // - base scenario: oper model ARPPU (from Excel)
-  // - fin scenarios: blended from per-vertical fin ARPPU weighted by oper-model paying user shares
-  //   (Goods/Services ratio stays the same when list scales uniformly by mauRatio)
-  const basePrivARPPU = finMAU
-    ? PRIV_PAYING.map((total,i) => {
-        const gW = GOODS_PRIV_PAYING[i] / total;
-        const sW = SERV_PRIV_PAYING[i]  / total;
-        return gW * FIN_GOODS_PRIV_ARPPU[i] + sW * FIN_SERV_PRIV_ARPPU[i];
-      })
-    : PRIV_ARPPU;
-  const baseAsdARPPU = finMAU
-    ? ASD_PAYING.map((total,i) => {
-        const gW = GOODS_ASD_PAYING[i] / total;
-        const sW = SERV_ASD_PAYING[i]  / total;
-        return gW * FIN_GOODS_ASD_ARPPU[i] + sW * FIN_SERV_ASD_ARPPU[i];
-      })
-    : ASD_ARPPU;
+  // Year 0 always anchored to oper model (Excel year-0 data is inconsistent with other years)
+  const basePrivARPPU = PRIV_PAYING.map((tot,i) => i === 0
+    ? PRIV_ARPPU[0]
+    : finMAU ? (GOODS_PRIV_PAYING[i]*FIN_GOODS_PRIV_ARPPU[i] + SERV_PRIV_PAYING[i]*FIN_SERV_PRIV_ARPPU[i]) / tot
+             : PRIV_ARPPU[i]);
+  const baseAsdARPPU = ASD_PAYING.map((tot,i) => i === 0
+    ? ASD_ARPPU[0]
+    : finMAU ? (GOODS_ASD_PAYING[i]*FIN_GOODS_ASD_ARPPU[i] + SERV_ASD_PAYING[i]*FIN_SERV_ASD_ARPPU[i]) / tot
+             : ASD_ARPPU[i]);
 
-  // Base revenue derived from list × CR × ARPPU × 12 (not pinned to fin model revenue)
   const basePrivRev = basePrivList.map((l,i) => l * PRIV_CR[i] * basePrivARPPU[i] * 12);
   const baseAsdRev  = baseAsdList.map((l,i)  => l * ASD_CR[i]  * baseAsdARPPU[i]  * 12);
 
