@@ -284,6 +284,17 @@
       </div>
     </div>
 
+    <!-- ARPU -->
+    <div class="grid-2" style="margin-bottom:20px">
+      <div>
+        <div class="chart-title">ARPU · Private · среднемесячный, $</div>
+        <div class="chart-wrap-xs"><canvas id="c-arpu-priv"></canvas></div>
+      </div>
+      <div>
+        <div class="chart-title">ARPU · Pro (ASD) · среднемесячный, $</div>
+        <div class="chart-wrap-xs"><canvas id="c-arpu-pro"></canvas></div>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -530,6 +541,12 @@ const cCRPro   = lineChart('c-cr-pro',   [ ds('Pro · опермодель',ASD_
 const cARPPUPriv = lineChart('c-arppu-priv', [ ds('Private · опермодель',PRIV_ARPPU,'#9B8CFF',[5,3],undefined,ORD_OPR), ds('Private · сценарий',PRIV_ARPPU,'#5038FF',[],undefined,ORD_NEW) ], v=>'$'+v.toFixed(2));
 const cARPPUPro  = lineChart('c-arppu-pro',  [ ds('Pro · опермодель',ASD_ARPPU,'#9B8CFF',[5,3],undefined,ORD_OPR),     ds('Pro · сценарий',ASD_ARPPU,'#5038FF',[],undefined,ORD_NEW) ],     v=>'$'+v.toFixed(2));
 
+// ARPU (rev / all sellers / 12) — idx: 0=oper, 1=scenario
+const PRIV_ARPU = PRIV_REV.map((r,i) => r / (PRIV_LIST[i] * 12));
+const ASD_ARPU  = ASD_REV.map((r,i)  => r / (ASD_LIST[i]  * 12));
+const cARPUPriv = lineChart('c-arpu-priv', [ ds('Private · опермодель',PRIV_ARPU,'#9B8CFF',[5,3],undefined,ORD_OPR), ds('Private · сценарий',PRIV_ARPU,'#5038FF',[],undefined,ORD_NEW) ], v=>'$'+v.toFixed(3));
+const cARPUPro  = lineChart('c-arpu-pro',  [ ds('Pro · опермодель',ASD_ARPU,'#9B8CFF',[5,3],undefined,ORD_OPR),     ds('Pro · сценарий',ASD_ARPU,'#5038FF',[],undefined,ORD_NEW) ],     v=>'$'+v.toFixed(3));
+
 
 // Prices (static reference) — 4 charts with OLX reference line
 const fmtUSD = v => '$'+v.toFixed(3);
@@ -640,7 +657,9 @@ function updateAll() {
   cCRPro.data.datasets[1].data    = scAsdCR;
   cARPPUPriv.data.datasets[1].data = scPrivARPPU;
   cARPPUPro.data.datasets[1].data  = scAsdARPPU;
-  [cPrivRev,cAsdRev,cPrivSell,cAsdSell,cCRPriv,cCRPro,cARPPUPriv,cARPPUPro].forEach(c=>c.update('none'));
+  cARPUPriv.data.datasets[1].data  = scPrivRev.map((r,i) => scPrivList[i] > 0 ? r/(scPrivList[i]*12) : 0);
+  cARPUPro.data.datasets[1].data   = scAsdRev.map((r,i)  => scAsdList[i]  > 0 ? r/(scAsdList[i]*12)  : 0);
+  [cPrivRev,cAsdRev,cPrivSell,cAsdSell,cCRPriv,cCRPro,cARPPUPriv,cARPPUPro,cARPUPriv,cARPUPro].forEach(c=>c.update('none'));
 
   // MAU: fin-scenario → FIN_MAU; otherwise slider-based
   const scMau = scMauBase;
@@ -724,7 +743,7 @@ function toggleSection(key) {
   body.classList.toggle('open', !wasOpen);
   icon.classList.toggle('open', !wasOpen);
   if (!wasOpen) {
-    if (key==='seg') setTimeout(()=>{ [cPrivRev,cAsdRev,cPrivSell,cAsdSell,cCRPriv,cCRPro,cARPPUPriv,cARPPUPro].forEach(c=>c.resize()); }, 60);
+    if (key==='seg') setTimeout(()=>{ [cPrivRev,cAsdRev,cPrivSell,cAsdSell,cCRPriv,cCRPro,cARPPUPriv,cARPPUPro,cARPUPriv,cARPUPro].forEach(c=>c.resize()); }, 60);
     if (key==='vert')   setTimeout(()=>{ [cVGoods,cVServ,cVTotal].forEach(c=>c.resize()); }, 60);
     if (key==='prices') setTimeout(()=>{ [cPriceBBLGoods,cPriceBBLServ,cPriceBSTGoods,cPriceBSTServ].forEach(c=>c.resize()); }, 60);
   }
