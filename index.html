@@ -421,11 +421,21 @@ const FIN_PRICE_BBL_GOODS = [0.0974,0.1171,0.1783,0.2402,0.3084,0.3737,0.4529,0.
 const FIN_PRICE_BBL_SERV  = [0.1695,0.2050,0.2953,0.3720,0.4501,0.5447,0.6591,0.7975,0.9649,1.1676];
 const FIN_PRICE_BST_GOODS = [0.3483,0.4080,0.5746,0.7101,0.8524,1.0264,1.2354,1.4872,1.7913,2.1578];
 const FIN_PRICE_BST_SERV  = [1.0414,1.2601,1.8145,2.2863,2.7664,3.3474,4.0503,4.9009,5.9301,7.1754];
-// OLX 2025 reference prices (flat lines)
-const OLX_BBL_GOODS = YEARS.map(() => 0.2009);
+// OLX 2026 reference prices (flat lines)
+const OLX_BBL_GOODS = YEARS.map(() => 0.2323);
 const OLX_BBL_SERV  = YEARS.map(() => 0.3389);
 const OLX_BST_GOODS = YEARS.map(() => 0.6417);
 const OLX_BST_SERV  = YEARS.map(() => 2.0828);
+
+// OLX prices with Uzbekistan inflation
+// 2026 = база (7.22% уже в цене), далее 6.80% (2027) → 6.59%×8
+const _INF_RATES = [0.068,0.0659,0.0659,0.0659,0.0659,0.0659,0.0659,0.0659,0.0659];
+const UZB_INF = YEARS.map((_,i) => i===0 ? 1 : _INF_RATES.slice(0,i).reduce((acc,r)=>acc*(1+r),1));
+
+const OLX_BBL_GOODS_INF = UZB_INF.map(m => +(0.2323 * m).toFixed(4));
+const OLX_BBL_SERV_INF  = UZB_INF.map(m => +(0.3389 * m).toFixed(4));
+const OLX_BST_GOODS_INF = UZB_INF.map(m => +(0.6417 * m).toFixed(4));
+const OLX_BST_SERV_INF  = UZB_INF.map(m => +(2.0828 * m).toFixed(4));
 
 // ══════════════════════════════════════════════════════════
 // HELPERS
@@ -550,11 +560,12 @@ const cARPUPro  = lineChart('c-arpu-pro',  [ ds('Pro · опермодель',AS
 
 // Prices (static reference) — 4 charts with OLX reference line
 const fmtUSD = v => '$'+v.toFixed(3);
-const olxDs = (data) => ({ label:'OLX 2025', data, borderColor:'#999', backgroundColor:'transparent', borderWidth:1.5, borderDash:[4,4], pointRadius:0, tension:0, pointStyle:'line', order:ORD_OLX });
-const cPriceBBLGoods = lineChart('c-price-bbl-goods', [ ds('MNZ · Goods размещение', PRICE_BBL_GOODS,'#5038FF',[],undefined,ORD_OPR), olxDs(OLX_BBL_GOODS) ], fmtUSD);
-const cPriceBBLServ  = lineChart('c-price-bbl-serv',  [ ds('MNZ · Services размещение', PRICE_BBL_SERV,'#5038FF',[],undefined,ORD_OPR), olxDs(OLX_BBL_SERV)  ], fmtUSD);
-const cPriceBSTGoods = lineChart('c-price-bst-goods', [ ds('MNZ · Goods продвижение',  PRICE_BST_GOODS,'#5038FF',[],undefined,ORD_OPR), olxDs(OLX_BST_GOODS) ], fmtUSD);
-const cPriceBSTServ  = lineChart('c-price-bst-serv',  [ ds('MNZ · Services продвижение',PRICE_BST_SERV,'#5038FF',[],undefined,ORD_OPR), olxDs(OLX_BST_SERV)  ], fmtUSD);
+const olxDs    = (data) => ({ label:'OLX 2026', data, borderColor:'#999', backgroundColor:'transparent', borderWidth:1.5, borderDash:[4,4], pointRadius:0, tension:0, pointStyle:'line', order:ORD_OLX });
+const olxInfDs = (data) => ({ label:'прогноз цен OLX с учётом инфляции', data, borderColor:'#FFAA44', backgroundColor:'transparent', borderWidth:1.5, borderDash:[2,3], pointRadius:0, tension:0, pointStyle:'line', order:ORD_OLX });
+const cPriceBBLGoods = lineChart('c-price-bbl-goods', [ ds('MNZ · Goods размещение', PRICE_BBL_GOODS,'#5038FF',[],undefined,ORD_OPR), olxDs(OLX_BBL_GOODS), olxInfDs(OLX_BBL_GOODS_INF) ], fmtUSD);
+const cPriceBBLServ  = lineChart('c-price-bbl-serv',  [ ds('MNZ · Services размещение', PRICE_BBL_SERV,'#5038FF',[],undefined,ORD_OPR), olxDs(OLX_BBL_SERV),  olxInfDs(OLX_BBL_SERV_INF)  ], fmtUSD);
+const cPriceBSTGoods = lineChart('c-price-bst-goods', [ ds('MNZ · Goods продвижение',  PRICE_BST_GOODS,'#5038FF',[],undefined,ORD_OPR), olxDs(OLX_BST_GOODS), olxInfDs(OLX_BST_GOODS_INF) ], fmtUSD);
+const cPriceBSTServ  = lineChart('c-price-bst-serv',  [ ds('MNZ · Services продвижение',PRICE_BST_SERV,'#5038FF',[],undefined,ORD_OPR), olxDs(OLX_BST_SERV),  olxInfDs(OLX_BST_SERV_INF)  ], fmtUSD);
 
 // Verticals
 const cVGoods = lineChart('c-v-goods', [ ds('Финмодель',FIN_GOODS_REV,'#F4A7C3',[],undefined,ORD_FIN), ds('Goods · опермодель',GOODS_REV,'#9B8CFF',[6,3],undefined,ORD_OPR), ds('Goods · сценарий',GOODS_REV,'#5038FF',[],undefined,ORD_NEW) ], fmtM);
